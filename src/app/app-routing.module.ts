@@ -1,10 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-
-const routes: Routes = [];
+import { MainLayoutComponent } from './views/main-layout/main-layout.component';
+import { HomeComponent } from './views/home/home.component';
+import { MsalGuard } from '@azure/msal-angular';
+const routes: Routes = [
+  { path: 'main', component: MainLayoutComponent, canActivate: [MsalGuard] },
+  { path: '', component: HomeComponent, canActivate: [MsalGuard] },
+];
 
 @NgModule({
+  declarations: [
+  ],
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
