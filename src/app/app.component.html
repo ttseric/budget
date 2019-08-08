@@ -1,4 +1,4 @@
-<div *ngIf="loggedIn" class="container-flud" style="height: 100%;width: 100%;">
+<div class="container-flud" style="height: 100%;width: 100%;">
   <div style="border-width:1px;border-style:soild;padding-left:15px;padding-right:15px;">
     <div class="row">
       <div class="col-sm-8"><span class="navbar-brand spl-title" style="padding-left: 5px;">Property Lease
@@ -17,7 +17,7 @@
             <img width="25px" src="/assets/login.png" [title]="name"/>
         </div>
         <span style="color: #428bca;cursor:pointer;" (click)="logout()">Logout</span>
-
+        <span style="color: #428bca;cursor:pointer;" (click)="login()">Login</span>
       </div>
     </div>
   </div>

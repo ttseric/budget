@@ -62,7 +62,7 @@ export function loggerCallback(logLevel, message, piiEnabled) {
       postLogoutRedirectUri: "http://localhost:4200",
       navigateToLoginRequestUrl: true,
       popUp: false,
-      consentScopes: [ "user.read"],
+      consentScopes: ["user.read"],
       logger: loggerCallback,
       correlationId: '1234',
       level: LogLevel.Info,

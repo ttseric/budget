@@ -30,10 +30,14 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 1,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
+      escalation: "By Term",
+      leaseTerm: '24/00',
+      evpTerm: '00/30',
+      rfpTerm: '00/15',
       protfolio: 'Office',
       unit: 'G/F',
       floor: 'G/F',
@@ -42,16 +46,28 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '2',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
       secondRenew: false,
-      thirdRenew: false
+      thirdRenew: false,
+      assumptions:[
+        { termNo:'1st term', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'1st term', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'1st term', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'2nd term', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'2nd term', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'2nd term', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'3rd term', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'3rd term', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'3rd term', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''}
+      ]
     },
     {
       seq: 2,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -63,16 +79,37 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '2',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
       secondRenew: false,
-      thirdRenew: false
+      thirdRenew: false,
+      assumptions:[
+        { termNo:'1st Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'1st Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'1st Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'2nd Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'2nd Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'2nd Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'3rd Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'3rd Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'3rd Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'4th Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'4th Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'4th Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'5th Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'5th Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'5th Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+        { termNo:'6th Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
+        { termNo:'6th Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
+        { termNo:'6th Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+      ]
     },
     {
       seq: 3,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -84,6 +121,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '1',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -93,7 +131,7 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 4,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -105,6 +143,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '4',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -114,7 +153,7 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 5,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -126,6 +165,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '1',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -135,7 +175,7 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 6,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -147,6 +187,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '2',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -156,7 +197,7 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 7,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -168,6 +209,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '3',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -177,7 +219,7 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 8,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -189,6 +231,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '2',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -198,7 +241,7 @@ export class MainLayoutComponent implements OnInit {
     {
       seq: 9,
       col1: '',
-      lock: '',
+      locked: '',
       isCR: true,
       warning: 'N',
       warningText: '',
@@ -210,6 +253,7 @@ export class MainLayoutComponent implements OnInit {
       tradeCategory: '1',
       unitZone: 'Zone A',
       leaseExpDate: '31-Oct-2025',
+      itemEndDate: '31-Oct-2025',
       assLevel: 'GL',
       assGroup: 'Term GP 216',
       firstRenew: true,
@@ -354,6 +398,9 @@ export class MainLayoutComponent implements OnInit {
   public get currentTermColDefs() {
     return this.colDefService.currentTermGridColumnDefs;
   }
+  public get byTermCellrendererParams(){
+    return this.colDefService.byTermCellrendererParams;
+  }
   constructor(
     private gridDefService: GridDefService,
     private colDefService: ColDefService,
@@ -457,6 +504,26 @@ export class MainLayoutComponent implements OnInit {
     }
 
     return this.gridDefService.save(gridDef);
+  }
+  public selectedRowsString ='';
+
+  onSelectionChanged() {
+    var selectedRows = this.termGridApi.getSelectedRows();
+    var selectedRowsString = "";
+    selectedRows.forEach(function(selectedRow, index) {
+      if (index > 5) {
+        return;
+      }
+      if (index !== 0) {
+        selectedRowsString += ", ";
+      }
+      selectedRowsString += selectedRow.tenant;
+    });
+    if (selectedRows.length >= 5) {
+      selectedRowsString += " - and " + (selectedRows.length - 5) + " others";
+    }
+    this.selectedRowsString = selectedRowsString;
+    //document.querySelector("#selectedRows").innerHTML = selectedRowsString;
   }
 }
 function getCheckBox() {

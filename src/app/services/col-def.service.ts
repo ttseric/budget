@@ -167,6 +167,21 @@ export class ColDefService {
       params.successCallback(params.data.versions);
     },
   };
+  public byTermCellrendererParams={
+    detailGridOptions:{
+      columnDefs:[
+        {headerName: 'Term No.', field: "termNo", filter: "agTextColumnFilter"},
+        {headerName: 'Type', field: "termType"},
+        {headerName: "from", field: "from"},
+        {headerName: "to", field: "to"},
+        {headerName: "M/D", field: "term"},
+        {headerName: "Remarks", field: "remark"}
+      ]
+    },
+    getDetailRowData: function (params) {
+      params.successCallback(params.data.assumptions);
+    },
+  }
   constructor(
 
   ) { 
@@ -186,59 +201,39 @@ export class ColDefService {
         width: 80,
         resizable: true,
         editable: true,
-        cellEditor: 'numeric'
+        cellEditor: 'numeric',
+        cellRenderer: "agGroupCellRenderer"
       },
+      // {
+      //   headerName: '',
+      //   field: "col1",
+      //   width: 30,
+      // },
       {
-        headerName: '',
-        field: "col1",
-        width: 30,
-      },
-      {
-        headerName: 'Lock',
-        field: "lock",
+        headerName: 'Locked',
+        field: "locked",
         width: 80,
-      },
-      {
-        headerName: "Is C.R",
-        field: 'isCR',
-        width: 60,
         editable: true,
         cellEditor: "checkbox",
         cellRenderer: (params)=>{
           return `<input type='checkbox' ${params.value ? 'checked' : ''} />`;
         }
       },
+      // {
+      //   headerName: "Is C.R",
+      //   field: 'isCR',
+      //   width: 60,
+      //   editable: true,
+      //   cellEditor: "checkbox",
+      //   cellRenderer: (params)=>{
+      //     return `<input type='checkbox' ${params.value ? 'checked' : ''} />`;
+      //   }
+      // },
       {
         headerName: "warning",
         field: "warning",
-        width: 60,
+        width: 100,
         editable: true
-      },
-      {
-        headerName: "Warn Text",
-        field: "warningText",
-        width: 60,
-        editable: true
-      },
-      {
-        headerName: "Portfolio",
-        field: "protfolio",
-        width: 100,
-        editable: true,
-        cellEditor: "select",
-        cellEditorParams: {
-          values: ['Shop', 'Office']
-        }
-      },
-      {
-        headerName: "Unit",
-        field: "unit",
-        width: 100,
-      },
-      {
-        headerName: "Floor",
-        field: "floor",
-        width: 100,
       },
       {
         headerName: "Tenant",
@@ -246,45 +241,37 @@ export class ColDefService {
         editable: true
       },
       {
-        headerName: "Shop",
-        field: "shop",
-        editable: true
-      },
-      {
-        headerName: "Trade Category",
-        field: "tradeCategory",
+        headerName: "Escalation",
+        field: "escalation",
+        width: 100,
         editable: true,
         cellEditor: "select",
         cellEditorParams: {
-          values: extractValues(tradeCategories)
-        },
-        valueFormatter: function(params) {
-          return lookupValue(tradeCategories, params.value);
-        },
-        valueParser: function(params) {
-          return lookupKey(tradeCategories, params.newValue);
+          values: ['By Year', 'By Term']
         }
       },
       {
-        headerName: "Lease Exp. Date",
-        field: "leaseExpDate",
+        headerName: "Lease M/D",
+        field: "leaseTerm",
+        width: 100,
         editable: true,
-        cellEditor: "datePicker"
       },
       {
-        headerName: "Ass. Level",
-        field: "assLevel",
-        editable: true
-      }, 
+        headerName: "EVP M/D",
+        field: "evpTerm",
+        width: 100,
+        editable: true,
+      },
       {
-        headerName: "Ass. Group",
-        field: "assGroup",
-        editable: true
+        headerName: "RFP M/D",
+        field: "rfpTerm",
+        width: 100,
+        editable: true,
       },
       {
         headerName: "1st Renew",
         field: "firstRenew",
-        width: 100,
+        width: 80,
         editable: true,
         cellEditor: "checkbox",
         cellRenderer: (params)=>{
@@ -294,7 +281,7 @@ export class ColDefService {
       {
         headerName: "2nd Renew",
         field: "secondRenew",
-        width: 100,
+        width: 80,
         editable: true,
         cellEditor: "checkbox",
         cellRenderer: (params)=>{
@@ -304,14 +291,93 @@ export class ColDefService {
       {
         headerName: "3rd Renew",
         field: "thirdRenew",
-        width: 100,
+        width: 80,
         editable: true,
         cellEditor: "checkbox",
         cellRenderer: (params)=>{
           return `<input type='checkbox' ${params.value ? 'checked' : ''} />`;
         }
       },
-  
+      // {
+      //   headerName: "Warn Text",
+      //   field: "warningText",
+      //   width: 60,
+      //   editable: true
+      // },
+      // {
+      //   headerName: "Portfolio",
+      //   hide: true,
+      //   field: "protfolio",
+      //   width: 100,
+      //   editable: true,
+      //   cellEditor: "select",
+      //   cellEditorParams: {
+      //     values: ['Shop', 'Office']
+      //   }
+      // },
+      // {
+      //   headerName: "Unit",
+      //   field: "unit",
+      //   width: 100,
+      //   hide: true
+      // },
+      // {
+      //   headerName: "Floor",
+      //   field: "floor",
+      //   width: 100,
+      // },
+
+      // {
+      //   headerName: "Shop",
+      //   field: "shop",
+      //   editable: true
+      // },
+      // {
+      //   headerName: "Trade Category",
+      //   field: "tradeCategory",
+      //   editable: true,
+      //   cellEditor: "select",
+      //   cellEditorParams: {
+      //     values: extractValues(tradeCategories)
+      //   },
+      //   valueFormatter: function(params) {
+      //     return lookupValue(tradeCategories, params.value);
+      //   },
+      //   valueParser: function(params) {
+      //     return lookupKey(tradeCategories, params.newValue);
+      //   }
+      // },
+      {
+        headerName: "Lease Exp. Date",
+        field: "leaseExpDate",
+        editable: true,
+        cellEditor: "datePicker",
+        width:120,
+      },
+      {
+        headerName: "Item End Date",
+        field: "itemEndDate",
+        editable: true,
+        cellEditor: "datePicker",
+        width:100,
+      },
+      {
+        headerName: "Ass. Level",
+        field: "assLevel",
+        editable: true,
+        width:150,
+        cellEditor: "select",
+        cellEditorParams: {
+          values: ["GL", "Manual", "Assumption 1", "Assumption 2"]
+        }
+      }, 
+      // {
+      //   headerName: "Ass. Group",
+      //   field: "assGroup",
+      //   editable: true,
+      //   width:80
+      // },
+ 
     ];
   }
 }

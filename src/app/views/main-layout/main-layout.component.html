@@ -2,6 +2,7 @@
     <button kendoButton [icon]="'arrow-down'" #anchor (click)="onToggle()" class="k-button">Actions</button>
     <button class="k-button" (click)="saveGrids()">Save Grid Settings</button>
     <button (click)="print()">Print</button>
+    <span>{{selectedRowsString}}</span>
 </div>
   <kendo-popup style="width: 100%;" type="slide" [anchor]="anchor" [popupClass]="'content popup'" *ngIf="show">
     <div style="width: 100%;height: 300px;background-color: rgb(245,247,248);padding:30px;">
@@ -53,9 +54,9 @@
         <kendo-splitter>
           <kendo-splitter-pane>
             <div class="pane-content" style="height: 100%;background-color:#f8f9fa;">
-                <ag-grid-angular #termGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;" [enableRangeSelection]="true"
+                <ag-grid-angular #termGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;" [enableRangeSelection]="false" [rowSelection]="'multiple'"
                   id="termGrid" class="ag-theme-balham" [columnDefs]="termGridColDefs" (gridReady)="onTermGridReady($event)" [components]="components"
-                  [singleClickEdit]="true" [rowData]="rowData">
+                  [singleClickEdit]="true" [rowData]="rowData" [masterDetail]="true" [detailCellRendererParams]="byTermCellrendererParams">
                 </ag-grid-angular>
             </div>
           </kendo-splitter-pane>

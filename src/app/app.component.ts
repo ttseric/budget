@@ -133,7 +133,8 @@ export class AppComponent {
      //   this.loggedIn = true;
       }
      else {
-       //this.loggedIn = false;
+       //console.log('go login');
+      //this.login();
      }
 
     this.detailCellRendererParams = {
@@ -160,7 +161,10 @@ export class AppComponent {
   }
 
   public get name(){
+    if(this.msalService.getUser())
     return this.msalService.getUser().name;
+    else
+    return '';
   }
   public get loggedIn(){
     return this.authService.isLoggedIn;
@@ -188,32 +192,6 @@ export class AppComponent {
       this.authService.login(payload._token);
     });
 
-  }
-
-
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-
-    var allColumnIds = [];
-    this.gridColumnApi.getAllColumns().forEach(function(column) {
-      allColumnIds.push(column.colId);
-    });
-    this.gridColumnApi.autoSizeColumns(allColumnIds);
-    // this.http
-    //   .get<any[]>(
-    //     "https://raw.githubusercontent.com/ag-grid/ag-grid-docs/latest/src/javascript-grid-master-detail/simple/data/data.json"
-    //   )
-    //   .subscribe(data => {
-    //     this.rowData = data;
-    //   });
-
-    // setTimeout(function () {
-    //   var rowCount = 0;
-    //   params.api.forEachNode(function (node) {
-    //     node.setExpanded(rowCount++ === 1);
-    //   });
-    // }, 500);
   }
 
 }
