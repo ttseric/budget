@@ -31,6 +31,7 @@
             "styles": [
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/jquery-ui/themes/base/all.css",
+              "./node_modules/@fortawesome/fontawesome-free/css/all.css",
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
               },
@@ -39,7 +40,9 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/jquery-ui/ui/widgets/datepicker.js"
+              "node_modules/jquery-ui/ui/widgets/datepicker.js",
+              "node_modules/inputmask/dist/inputmask/jquery.inputmask.js",
+              "node_modules/inputmask/dist/inputmask/inputmask.js"
             ]
           },
           "configurations": {

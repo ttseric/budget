@@ -25,8 +25,7 @@ import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
-
-
+import { environment } from 'src/environments/environment';
 
 export function loggerCallback(logLevel, message, piiEnabled) {
   console.log("client logging" + message);
@@ -52,14 +51,12 @@ export function loggerCallback(logLevel, message, piiEnabled) {
     DialogsModule,
     FontAwesomeModule,
     MsalModule.forRoot({
-      clientID: "d22ea31a-e5c9-4039-a9e1-1a44770e91db",
-      authority: "https://login.microsoftonline.com/common",
+      clientID: environment.clientID,
+      authority: environment.authority,
       validateAuthority: true,
-      //redirectUri: "https://es14157",
-      redirectUri: "http://localhost:4200",
+      redirectUri: environment.redirectUri,
       cacheLocation : "localStorage",
-      //postLogoutRedirectUri: "https://es14157",
-      postLogoutRedirectUri: "http://localhost:4200",
+      postLogoutRedirectUri: environment.postLogoutRedirectUri,
       navigateToLoginRequestUrl: true,
       popUp: false,
       consentScopes: ["user.read"],

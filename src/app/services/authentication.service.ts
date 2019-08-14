@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ConstantService } from './constant.service';
 import { LoginResponse } from '../models/response';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/models/user';
@@ -13,7 +12,6 @@ export class AuthenticationService {
   public idTokenSubject: BehaviorSubject<string>;
   constructor(
     private http: HttpClient,
-    private constantService: ConstantService,
     private msalService: MsalService
   ) { 
     var storageIdToken = localStorage.getItem("idToken");
@@ -21,11 +19,10 @@ export class AuthenticationService {
   }
 
 
-  public get authorizedHttpOptions() {
+  public get httpOptions() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        //'Authorization': 'Bearer ' + this.currentUserSubject.value.idToken,
       })
     }
     return httpOptions;

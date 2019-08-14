@@ -8,6 +8,8 @@ import { forkJoin } from 'rxjs';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/datepicker';
+import { BudgetTerm, BudgetDetailTerm } from 'src/app/models/BudgetTerm';
+import { BuildTermDetailService } from 'src/app/services/build-term-detail.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -15,10 +17,7 @@ import 'jquery-ui/ui/widgets/datepicker';
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent implements OnInit {
-  public defaultColDef = {
-    resizable: true,
-    sortable: true
-  }
+
   public splitButtonData: Array<any> = [{
     text: 'Option 1'
   }, {
@@ -26,239 +25,176 @@ export class MainLayoutComponent implements OnInit {
   }, {
     text: 'Option 3',
   }];
-  public rowData = [
+  public rowData: BudgetTerm[] = [
     {
+      budgetTermId: 0,
       seq: 1,
-      col1: '',
-      locked: '',
-      isCR: true,
+      isLocked: false,
       warning: 'N',
-      warningText: '',
       escalation: "By Term",
-      leaseTerm: '24/00',
-      evpTerm: '00/30',
-      rfpTerm: '00/15',
-      protfolio: 'Office',
-      unit: 'G/F',
-      floor: 'G/F',
+      leaseTermLength: '24/00',
+      evpTermLength: '00/30',
+      rfpTermLength: '00/15',
       tenant: 'Vacant',
-      shop: 'shop 1',
-      tradeCategory: '2',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
+      leaseExpireDate: new Date(2025, 11, 1),
+      itemEndDate: new Date(2025, 11, 31),
+      assumptionLevel: 'GL',
       firstRenew: true,
       secondRenew: false,
       thirdRenew: false,
-      assumptions:[
-        { termNo:'1st term', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'1st term', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'1st term', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'2nd term', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'2nd term', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'2nd term', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'3rd term', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'3rd term', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'3rd term', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''}
+      isDirty: false,
+      budgetDetailTerms: [
+        { budgetTermId: 0, budgetTermDetailId: 0, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 0, budgetTermDetailId: 1, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 0, budgetTermDetailId: 2, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 0, budgetTermDetailId: 3, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 0, budgetTermDetailId: 4, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 0, budgetTermDetailId: 5, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+      ],
+      contractualTerms: [
+        { budgetTermId: 0, budgetTermDetailId: 0, isLocked: false, budgetTermName: 'Contractual Lease', termType: "Lease", from: new Date(2016, 5, 1), to: new Date(), termLength: "", remarks: '' },
       ]
     },
     {
+      budgetTermId: 1,
       seq: 2,
-      col1: '',
-      locked: '',
-      isCR: true,
+      isLocked: false,
       warning: 'N',
-      warningText: '',
-      protfolio: 'Shop',
-      unit: '2/F',
-      floor: '2/F',
-      tenant: 'Tenant of CA00000530',
-      shop: 'shop 2',
-      tradeCategory: '2',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
+      escalation: "By Term",
+      leaseTermLength: '24/00',
+      evpTermLength: '00/30',
+      rfpTermLength: '00/15',
+      tenant: 'Vacant',
+      leaseExpireDate: new Date(2025, 11, 1),
+      itemEndDate: new Date(2025, 11, 31),
+      assumptionLevel: 'GL',
       firstRenew: true,
       secondRenew: false,
       thirdRenew: false,
-      assumptions:[
-        { termNo:'1st Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'1st Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'1st Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'2nd Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'2nd Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'2nd Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'3rd Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'3rd Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'3rd Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'4th Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'4th Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'4th Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'5th Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'5th Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'5th Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
-        { termNo:'6th Year', termType: "Lease", from: "30-Nov-2020", to: "30-Nov-2022", term: "24/00", remarks:''},
-        { termNo:'6th Year', termType: "EVP", from: "31-Oct-2020", to: "29-Nov-2020", term:"00/30", remarks: ''},
-        { termNo:'6th Year', termType: "RFP", from: "30-Nov-2020", to: "14-Dec-2020", term: "00/15", remarks: ''},
+      isDirty: false,
+      budgetDetailTerms: [
+
+        { budgetTermId: 1, budgetTermDetailId: 6, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 1, budgetTermDetailId: 7, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 1, budgetTermDetailId: 8, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 1, budgetTermDetailId: 9, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 1, budgetTermDetailId: 10, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 1, budgetTermDetailId: 11, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+      ],
+      contractualTerms: [
       ]
     },
     {
+      budgetTermId: 2,
       seq: 3,
-      col1: '',
-      locked: '',
-      isCR: true,
+      isLocked: false,
       warning: 'N',
-      warningText: '',
-      protfolio: 'Shop',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '1',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
+      escalation: "By Term",
+      leaseTermLength: '24/00',
+      evpTermLength: '00/30',
+      rfpTermLength: '00/15',
+      tenant: 'Vacant',
+      leaseExpireDate: new Date(2025, 11, 1),
+      itemEndDate: new Date(2025, 11, 31),
+      assumptionLevel: 'GL',
       firstRenew: true,
       secondRenew: false,
-      thirdRenew: false
+      thirdRenew: false,
+      isDirty: false,
+      budgetDetailTerms: [
+
+        { budgetTermId: 2, budgetTermDetailId: 12, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 2, budgetTermDetailId: 13, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 2, budgetTermDetailId: 14, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 2, budgetTermDetailId: 15, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 2, budgetTermDetailId: 16, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 2, budgetTermDetailId: 17, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+      ],
+      contractualTerms: []
     },
     {
+      budgetTermId: 3,
       seq: 4,
-      col1: '',
-      locked: '',
-      isCR: true,
+      isLocked: false,
       warning: 'N',
-      warningText: '',
-      protfolio: 'Office',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '4',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
+      escalation: "By Term",
+      leaseTermLength: '24/00',
+      evpTermLength: '00/30',
+      rfpTermLength: '00/15',
+      tenant: 'Vacant',
+      leaseExpireDate: new Date(2025, 11, 1),
+      itemEndDate: new Date(2025, 11, 31),
+      assumptionLevel: 'GL',
       firstRenew: true,
       secondRenew: false,
-      thirdRenew: false
+      thirdRenew: false,
+      isDirty: false,
+      budgetDetailTerms: [
+
+        { budgetTermId: 3, budgetTermDetailId: 18, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 3, budgetTermDetailId: 19, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 3, budgetTermDetailId: 20, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 3, budgetTermDetailId: 21, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 3, budgetTermDetailId: 22, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 3, budgetTermDetailId: 23, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+      ],
+      contractualTerms: []
     },
     {
+      budgetTermId: 4,
       seq: 5,
-      col1: '',
-      locked: '',
-      isCR: true,
+      isLocked: false,
       warning: 'N',
-      warningText: '',
-      protfolio: 'Office',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '1',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
+      escalation: "By Term",
+      leaseTermLength: '24/00',
+      evpTermLength: '00/30',
+      rfpTermLength: '00/15',
+      tenant: 'Vacant',
+      leaseExpireDate: new Date(2025, 11, 1),
+      itemEndDate: new Date(2025, 11, 31),
+      assumptionLevel: 'GL',
       firstRenew: true,
       secondRenew: false,
-      thirdRenew: false
+      thirdRenew: false,
+      isDirty: false,
+      budgetDetailTerms: [
+
+        { budgetTermId: 4, budgetTermDetailId: 24, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 4, budgetTermDetailId: 25, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 4, budgetTermDetailId: 26, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 4, budgetTermDetailId: 27, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 4, budgetTermDetailId: 28, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 4, budgetTermDetailId: 29, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+      ],
+      contractualTerms: []
     },
     {
+      budgetTermId: 5,
       seq: 6,
-      col1: '',
-      locked: '',
-      isCR: true,
+      isLocked: false,
       warning: 'N',
-      warningText: '',
-      protfolio: 'Shop',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '2',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
+      escalation: "By Term",
+      leaseTermLength: '24/00',
+      evpTermLength: '00/30',
+      rfpTermLength: '00/15',
+      tenant: 'Vacant',
+      leaseExpireDate: new Date(2025, 11, 1),
+      itemEndDate: new Date(2025, 11, 31),
+      assumptionLevel: 'GL',
       firstRenew: true,
       secondRenew: false,
-      thirdRenew: false
-    },
-    {
-      seq: 7,
-      col1: '',
-      locked: '',
-      isCR: true,
-      warning: 'N',
-      warningText: '',
-      protfolio: 'Shop',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '3',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false
-    },
-    {
-      seq: 8,
-      col1: '',
-      locked: '',
-      isCR: true,
-      warning: 'N',
-      warningText: '',
-      protfolio: 'Office',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '2',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false
-    },
-    {
-      seq: 9,
-      col1: '',
-      locked: '',
-      isCR: true,
-      warning: 'N',
-      warningText: '',
-      protfolio: 'Office',
-      unit: '13/F',
-      floor: '13/F',
-      tenant: 'Tenant of CA000000500',
-      shop: 'shop 3',
-      tradeCategory: '1',
-      unitZone: 'Zone A',
-      leaseExpDate: '31-Oct-2025',
-      itemEndDate: '31-Oct-2025',
-      assLevel: 'GL',
-      assGroup: 'Term GP 216',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false
+      thirdRenew: false,
+      isDirty: false,
+      budgetDetailTerms: [
+
+        { budgetTermId: 5, budgetTermDetailId: 30, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 5, budgetTermDetailId: 31, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 5, budgetTermDetailId: 32, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
+        { budgetTermId: 5, budgetTermDetailId: 33, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 5, budgetTermDetailId: 34, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+        { budgetTermId: 5, budgetTermDetailId: 35, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
+      ],
+      contractualTerms: []
     }
   ];
   public pcRowData = [
@@ -266,8 +202,8 @@ export class MainLayoutComponent implements OnInit {
       chargeCode: 'BASE RENT',
       description: 'BASE RENT DESC.',
       shop: 'shop 1',
-      startDate: '01-Nov-2017',
-      endDate: '31-Oct-2021',
+      startDate: '2017-11-01',
+      endDate: '31-10-2021',
       bf: 'M',
       amount: 90027.95
     },
@@ -275,8 +211,8 @@ export class MainLayoutComponent implements OnInit {
       chargeCode: 'BASE RENT',
       description: 'BASE RENT DESC.',
       shop: 'shop 1',
-      startDate: '01-Nov-2017',
-      endDate: '31-Oct-2021',
+      startDate: '2017-11-01',
+      endDate: '31-10-2021',
       bf: 'M',
       amount: 90027.95
     },
@@ -284,8 +220,8 @@ export class MainLayoutComponent implements OnInit {
       chargeCode: 'BASE RENT',
       description: 'BASE RENT DESC.',
       shop: 'shop 1',
-      startDate: '01-Nov-2017',
-      endDate: '31-Oct-2021',
+      startDate: '2017-11-01',
+      endDate: '31-10-2021',
       bf: 'M',
       amount: 90027.95
     },
@@ -293,8 +229,8 @@ export class MainLayoutComponent implements OnInit {
       chargeCode: 'BASE RENT',
       description: 'BASE RENT DESC.',
       shop: 'shop 1',
-      startDate: '01-Nov-2017',
-      endDate: '31-Oct-2021',
+      startDate: '2017-11-01',
+      endDate: '31-10-2021',
       bf: 'M',
       amount: 90027.95
     },
@@ -302,15 +238,15 @@ export class MainLayoutComponent implements OnInit {
       chargeCode: 'BASE RENT',
       description: 'BASE RENT DESC.',
       shop: 'shop 1',
-      startDate: '01-Nov-2017',
-      endDate: '31-Oct-2021',
+      startDate: '2017-11-01',
+      endDate: '31-10-2021',
       bf: 'M',
       amount: 90027.95
     },
   ]
   public rentRowData = [
     {
-      rrDate: '01-Nov-2021',
+      rrDate: '01-11-2021',
       condition: 'OMR',
       collarAmount: 103030,
       collarRate: 10,
@@ -318,7 +254,7 @@ export class MainLayoutComponent implements OnInit {
       capRate: 0.5
     },
     {
-      rrDate: '01-Nov-2021',
+      rrDate: '01-11-2021',
       condition: 'OMR',
       collarAmount: 103030,
       collarRate: 10,
@@ -326,7 +262,7 @@ export class MainLayoutComponent implements OnInit {
       capRate: 0.5
     },
     {
-      rrDate: '01-Nov-2021',
+      rrDate: '01-11-2021',
       condition: 'OMR',
       collarAmount: 103030,
       collarRate: 10,
@@ -336,31 +272,31 @@ export class MainLayoutComponent implements OnInit {
   ]
   public currentTermRowData = [
     {
-      evpFrom: '01-Nov-2017',
-      evpTo: '31-Oct-2025',
+      evpFrom: '2017-11-01',
+      evpTo: '2025-10-31',
       md1: '96/00',
-      termForm: '01-Nov-2017',
-      termTo: '31-Oct-2025',
+      termForm: '2017-11-01',
+      termTo: '2025-10-31',
       md2: '96/00',
       renew: true,
       remarks: 'testing'
     },
     {
-      evpFrom: '01-Nov-2017',
-      evpTo: '31-Oct-2025',
+      evpFrom: '2017-11-01',
+      evpTo: '2025-10-31',
       md1: '96/00',
-      termForm: '01-Nov-2017',
-      termTo: '31-Oct-2025',
+      termForm: '2017-11-01',
+      termTo: '2025-10-31',
       md2: '96/00',
       renew: true,
       remarks: 'testing'
     },
     {
-      evpFrom: '01-Nov-2017',
-      evpTo: '31-Oct-2025',
+      evpFrom: '2017-11-01',
+      evpTo: '2025-10-31',
       md1: '96/00',
-      termForm: '01-Nov-2017',
-      termTo: '31-Oct-2025',
+      termForm: '2017-11-01',
+      termTo: '2025-10-31',
       md2: '96/00',
       renew: true,
       remarks: 'testing'
@@ -374,10 +310,16 @@ export class MainLayoutComponent implements OnInit {
   private pcGridColumnApi: ColumnApi;
   private rentGridColumnApi: ColumnApi;
   private currentTermColumnApi: ColumnApi;
+  private termDetailGridApi: GridApi;
+  private termDetailGridColumnApi: ColumnApi;
+
   public components;
   public show: boolean = false;
   public onToggle(): void {
     this.show = !this.show;
+  }
+  public get defaultColDef() {
+    return this.colDefService.defaultColDef
   }
   public get animate(): any {
     return {
@@ -398,24 +340,66 @@ export class MainLayoutComponent implements OnInit {
   public get currentTermColDefs() {
     return this.colDefService.currentTermGridColumnDefs;
   }
-  public get byTermCellrendererParams(){
-    return this.colDefService.byTermCellrendererParams;
-  }
+  public byTermCellrendererParams;
   constructor(
     private gridDefService: GridDefService,
     private colDefService: ColDefService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private buildTermDetailService: BuildTermDetailService
   ) {
-    this.components = { datePicker: getDatePicker(), checkbox: getCheckBox(), numeric: getNumeric() };
-    console.log('hello')
-    console.log('components', this.components);
+    this.components = colDefService.components;
+    this.byTermCellrendererParams = this.colDefService.byTermCellrendererParams;
+    this.byTermCellrendererParams.detailGridOptions.onGridReady = this.onByTermDetailGridReady.bind(this);
+    this.byTermCellrendererParams.detailGridOptions.onSelectionChanged = this.onByTermDetailGridSelectionChanged.bind(this);
+    this.byTermCellrendererParams.detailGridOptions.getContextMenuItems = this.getDetailTermContextMenuItems.bind(this);
+    this.byTermCellrendererParams.detailGridOptions.context = { componentParent: this };
   }
 
+  public get getTermMenu() {
+    return this.getTermContextMenuItems.bind(this);
+  }
   ngOnInit() {
   }
 
-  print(){
+  addRowToDetail(params) {
+    var bugetTerm: BudgetTerm = params.node.data;
+    var newRow = { budgetTermId: bugetTerm.budgetTermId, budgetTermDetailId: 0, budgetTermName: 'New Term', isLocked: false, termType: "", from: new Date(), to: new Date(), termLength: "00/00", remarks: '' };
+    var budget = this.rowData.filter(x => x.budgetTermId == bugetTerm.budgetTermId)[0];
+
+    budget.budgetDetailTerms.push(newRow);
+    params.api.updateRowData({ add: [newRow], addIndex: 0 });
+    this.detailValueChanged(newRow);
+
+  }
+  deleteRow(params){
+    var row = params.node.data;
+
+    this.detailValueChanged(row);
+    var budgetTerm = this.rowData.filter(x=>x.budgetTermId == row.budgetTermId)[0];
+    budgetTerm.budgetDetailTerms = budgetTerm.budgetDetailTerms.filter(x=>x.budgetTermDetailId != row.budgetTermDetailId);
+    params.api.updateRowData({remove: [row]});
+
+  }
+  rebuildDetail(params){
+    var budgetTerm: BudgetTerm = params.node.data;
+    var row = this.rowData.filter(x=>x.budgetTermId == budgetTerm.budgetTermId)[0];
+
+    this.buildTermDetailService.budgetTerm = budgetTerm;
+    this.buildTermDetailService.execute();
+
+    row.budgetDetailTerms = [...this.buildTermDetailService.budgetDetailTerms];
+
+    if(params.node.detailNode.detailGridInfo != undefined){
+      params.node.detailNode.detailGridInfo.api.setRowData([]);
+      params.node.detailNode.detailGridInfo.api.updateRowData({add: [...row.contractualTerms, ...this.buildTermDetailService.budgetDetailTerms]});
+    }
+  }
+  print() {
     console.log('rowData', this.rowData);
+  }
+  onByTermDetailGridReady(params) {
+    this.termDetailGridApi = params.api;
+    this.termDetailGridColumnApi = params.columnApi;
   }
   onTermGridReady(params) {
     this.termGridApi = params.api;
@@ -505,12 +489,12 @@ export class MainLayoutComponent implements OnInit {
 
     return this.gridDefService.save(gridDef);
   }
-  public selectedRowsString ='';
-
-  onSelectionChanged() {
-    var selectedRows = this.termGridApi.getSelectedRows();
-    var selectedRowsString = "";
-    selectedRows.forEach(function(selectedRow, index) {
+  public selectedRowsString = '';
+  public detailSelectedRowsString = ''
+  onByTermDetailGridSelectionChanged(event) {
+    var selectedRows = this.termDetailGridApi.getSelectedRows();
+    var selectedRowsString = '';
+    selectedRows.forEach(function (selectedRow, index) {
       if (index > 5) {
         return;
       }
@@ -522,85 +506,93 @@ export class MainLayoutComponent implements OnInit {
     if (selectedRows.length >= 5) {
       selectedRowsString += " - and " + (selectedRows.length - 5) + " others";
     }
-    this.selectedRowsString = selectedRowsString;
-    //document.querySelector("#selectedRows").innerHTML = selectedRowsString;
+    this.detailSelectedRowsString = selectedRowsString;
+    console.log('select detail');
+    this.termGridApi.stopEditing();
   }
-}
-function getCheckBox() {
-  function Checkbox() { }
-  Checkbox.prototype.init = function (params) {
-    console.log('params', params);
-    this.eInput = document.createElement("input");
-    this.eInput.type="checkbox";
-    this.eInput.checked = params.value;
-    this.eInput.setAttribute("style","margin-left:10px");
-  };
-  Checkbox.prototype.getGui = function () {
-    return this.eInput;
-  };
-  Checkbox.prototype.afterGuiAttached = function () {
-    this.eInput.focus();
-    this.eInput.select();
-  };
-  Checkbox.prototype.getValue = function () {
-    return this.eInput.checked;
-  };
-  Checkbox.prototype.destroy = function () { };
-  Checkbox.prototype.isPopup = function () {
-    return false;
-  };
-  return Checkbox;
-}
+  onSelectionChanged(event) {
+    var selectedRows = this.termGridApi.getSelectedRows();
+    var selectedRowsString = "";
+    selectedRows.forEach(function (selectedRow, index) {
+      if (index > 5) {
+        return;
+      }
+      if (index !== 0) {
+        selectedRowsString += ", ";
+      }
+      selectedRowsString += selectedRow.tenant;
+    });
 
-function getNumeric() {
-  function Numeric() { }
-  Numeric.prototype.init = function (params) {
-    console.log('params', params);
-    this.eInput = document.createElement("input");
-    this.eInput.type="number";
-    this.eInput.min = "1";
-    this.eInput.max = "100"
-    this.eInput.value = params.value;
-  };
-  Numeric.prototype.getGui = function () {
-    return this.eInput;
-  };
-  Numeric.prototype.afterGuiAttached = function () {
-    this.eInput.focus();
-    this.eInput.select();
-  };
-  Numeric.prototype.getValue = function () {
-    return this.eInput.value;
-  };
-  Numeric.prototype.destroy = function () { };
-  Numeric.prototype.isPopup = function () {
-    return false;
-  };
-  return Numeric;
-}
+    if (selectedRows.length >= 5) {
+      selectedRowsString += " - and " + (selectedRows.length - 5) + " others";
+    }
+    this.selectedRowsString = selectedRowsString;
+    this.termDetailGridApi.stopEditing();
+  }
 
-function getDatePicker() {
-  function Datepicker() { }
-  Datepicker.prototype.init = function (params) {
-    console.log('params', params);
-    this.eInput = document.createElement("input");
-    this.eInput.value = params.value;
-    $(this.eInput).datepicker({ dateFormat: "dd-M-yy" });
-    $(this.eInput).datepicker("setDate", params.value);
-  };
-  Datepicker.prototype.getGui = function () {
-    return this.eInput;
-  };
-  Datepicker.prototype.afterGuiAttached = function () {
-    this.eInput.focus();
-    this.eInput.select();
-  };
-  Datepicker.prototype.getValue = function () {
-    return this.eInput.value;
-  };
-  Datepicker.prototype.destroy = function () { };
-  Datepicker.prototype.isPopup = function () {
-    return false;
-  };
-  return Datepicker;
+  public detailValueChanged(any) {
+
+    if (any.budgetTermId == undefined || any.budgetTermId == null)
+      return;
+
+    var parentRow = this.rowData.filter(x => x.budgetTermId == any.budgetTermId)[0];
+
+    parentRow.isDirty = true;
+
+    this.termGridApi.refreshCells();
+  }
+
+  getTermContextMenuItems(params) {
+    var menuItems = [];
+    var budgetTerm = params.node.data;
+
+    if(budgetTerm != null && budgetTerm.isLocked == false){
+      menuItems.push({
+        name: "Rebuild Detail",
+        action: ()=>{
+          this.rebuildDetail(params);
+        }
+      })
+    }
+    menuItems.push("separator");
+    menuItems.push("copy");
+    menuItems.push("copyWithHeaders");
+    menuItems.push("export");
+
+    return menuItems;
+  }
+
+  getBudgetTerm(budgetTermId: number): BudgetTerm {
+    return this.rowData.filter(x => x.budgetTermId == budgetTermId)[0];
+  }
+
+  getDetailTermContextMenuItems(params) {
+    console.log('menu params', params);
+    var menuItems = [];
+    var budgetTermId = params.node.data.budgetTermId;
+    var budgetTerm = this.getBudgetTerm(budgetTermId);
+
+    if (budgetTerm != null && budgetTerm.isLocked == false) {
+      menuItems.push({
+        name: "New Item",
+        action: () => {
+          this.addRowToDetail(params);
+        }
+      })
+    }
+    if (budgetTerm != null && budgetTerm.isLocked == false) {
+      menuItems.push({
+        name: "Delete Item",
+        action: () => {
+          this.deleteRow(params);
+        }
+      })
+    }
+    menuItems.push("separator");
+    menuItems.push("copy");
+    menuItems.push("copyWithHeaders");
+    menuItems.push("export");
+
+    return menuItems;
+  }
 }
