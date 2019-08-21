@@ -1,36 +1,90 @@
 export class BudgetTerm{
     budgetTermId:number;
     seq: number;
-    isLocked: boolean;
-    isDirty:boolean;
     warning: string;
+    unit: string;
     tenant: string;
-    escalation: string;
-    leaseTermLength: string;
-    evpTermLength: string;
-    rfpTermLength: string;
+    shop: string;
+    floor: string;
+    zone: string;
+    termLevel: string;
+    termGroup: string;
+    evpMD: string;
+    rfpMD: string;
+    leaseMD: string;
     firstRenew: boolean;
     secondRenew: boolean;
     thirdRenew: boolean;
-    leaseExpireDate: Date;
+    chargeLevel: string;
+    chargeGroup: string;
+    businessUnit: string;
+    commDate: Date;
+    lastSyncDate: Date;
+    expiryDate:Date;
+    leaseNo:string;
+    trade: string;
+    subTrade: string;
+    itemStartDate: Date;
     itemEndDate: Date;
-    assumptionLevel: string;
-    budgetDetailTerms: BudgetDetailTerm[];
-    contractualTerms: BudgetDetailTerm[];
+    weightedArea: number;
+    isDirty: boolean;
+    isLocked: boolean;
+
+
+    pcCharges: PCCharge[];
+    rentReviews: RentReview[];
+    currentTermAssumptions: TermAssumption[];
+    editingTermAssumptions: TermAssumption[];
+    contractualTerms: TermAssumption[];
     constructor(){
-        this.budgetDetailTerms = [];
+        this.pcCharges = [];
+        this.rentReviews = [];
+        this.currentTermAssumptions = [];
         this.contractualTerms = [];
     }
 }
-
-export class BudgetDetailTerm{
-    budgetTermDetailId: number;
-    budgetTermId: number;
-    budgetTermName: string;
+export class RentReview{
+    rrDate: Date;
+    condition: string;
+    collarAmount: number;
+    collarRate: number;
+    capAmount: number;
+    capRate: number;
+}
+export class PCCharge{
+    chargeCode: string;
+    description: string;
+    shop: string;
+    startDate: Date;
+    endDate: Date;
+    bf: string;
+    amount: number;
+}
+export class TermAssumption{
+    budgetTermId:number;
+    seq:number;
+    termAssumptionId: number;
+    evpFrom: Date;
+    evpTo: Date;
+    evpMD: string;
+    termFrom: Date;
+    termTo: Date;
+    termMD: string;
+    renew: boolean;
+    remarks: string;
+    error: string;
     isLocked: boolean;
-    termType: string;
-    from: Date;
-    to: Date;
-    termLength:string;
-    remarks:string;
+    rfpAssumptions: RfpAssumption[]
+
+    constructor(){
+        this.rfpAssumptions = [];
+    }
+}
+export class RfpAssumption{
+    rfpAssumptionId: number;
+    rfpFrom: Date;
+    rfpTo: Date;
+    rfpMD: string;
+    remarks: string;
+    error:string;
 }

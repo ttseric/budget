@@ -1,22 +1,17 @@
 <div *ngIf="loggedIn" class="container-flud" style="height: 100%;width: 100%;">
   <div style="border-width:1px;border-style:soild;padding-left:15px;padding-right:15px;">
     <div class="row">
-      <div class="col-sm-8"><span class="navbar-brand spl-title" style="padding-left: 5px;">Property Lease
-          System</span>
+      <div class="col-sm-3"><span class="navbar-brand spl-title">Property Lease System Budget</span>
       </div>
-      <div class="col-sm-4" style="text-align:right"><img src="assets/icon_swireproperties.png"
-          style="max-height:45px;margin-right: -15px;" alt=""></div>
-    </div>
-    <div class="row">
-      <div class="col-sm-8">
-          <button kendoButton [primary]="true"><fa-icon [icon]="['fas', 'chevron-left']"></fa-icon> Back to Lease</button>
-      </div>
-      <div class="col-sm-4" style="text-align:right;">
+      <div class="col-sm-4">
 
-        <div style="width: 100%" kendoTooltip position="left">
-            <img width="25px" src="/assets/login.png" [title]="name"/>
+      </div>
+      <div class="col-sm-5">
+        <div style="display: flex;flex-direction: row-reverse">
+          <div>
+            <img src="assets/icon_swireproperties.png" style="max-height:45px;margin-right: -15px;" alt="">
+          </div>
         </div>
-        <span style="color: #428bca;cursor:pointer;" (click)="logout()">Logout</span>
       </div>
     </div>
   </div>

@@ -7,9 +7,15 @@ import { ColumnState } from 'ag-grid-community/dist/lib/columnController/columnC
 import { forkJoin } from 'rxjs';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import * as $ from 'jquery';
+import * as _ from "lodash";
 import 'jquery-ui/ui/widgets/datepicker';
-import { BudgetTerm, BudgetDetailTerm } from 'src/app/models/BudgetTerm';
-import { BuildTermDetailService } from 'src/app/services/build-term-detail.service';
+import { BudgetTerm } from 'src/app/models/BudgetTerm';
+import { BuildBudgetTermByTermsService } from 'src/app/services/build-budget-term-by-terms.service';
+import { RevenueGridColDefService } from 'src/app/services/revenue-grid-col-def.service';
+import { Router } from '@angular/router';
+import { TermAssumptionColDefService } from 'src/app/services/term-assumption-col-def.service';
+import { GridComponentsService } from 'src/app/services/grid-components.service';
+import { DateRangeMDService } from 'src/app/services/date-range-md.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -17,7 +23,12 @@ import { BuildTermDetailService } from 'src/app/services/build-term-detail.servi
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent implements OnInit {
-
+  public gridContext = { componentParent: this};
+  public showEditTermGrid = false;
+  public showDataRow = null;
+  public revenueGridOptions = { alignedGrids: [], suppressHorizontalScroll: true };
+  public revenueFooterGridOptions = { alignedGrids: [] };
+  public showTermGrid = false;
   public splitButtonData: Array<any> = [{
     text: 'Option 1'
   }, {
@@ -25,296 +36,35 @@ export class MainLayoutComponent implements OnInit {
   }, {
     text: 'Option 3',
   }];
-  public rowData: BudgetTerm[] = [
-    {
-      budgetTermId: 0,
-      seq: 1,
-      isLocked: false,
-      warning: 'N',
-      escalation: "By Term",
-      leaseTermLength: '24/00',
-      evpTermLength: '00/30',
-      rfpTermLength: '00/15',
-      tenant: 'Vacant',
-      leaseExpireDate: new Date(2025, 11, 1),
-      itemEndDate: new Date(2025, 11, 31),
-      assumptionLevel: 'GL',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false,
-      isDirty: false,
-      budgetDetailTerms: [
-        { budgetTermId: 0, budgetTermDetailId: 0, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 0, budgetTermDetailId: 1, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 0, budgetTermDetailId: 2, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 0, budgetTermDetailId: 3, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 0, budgetTermDetailId: 4, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 0, budgetTermDetailId: 5, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-      ],
-      contractualTerms: [
-        { budgetTermId: 0, budgetTermDetailId: 0, isLocked: false, budgetTermName: 'Contractual Lease', termType: "Lease", from: new Date(2016, 5, 1), to: new Date(), termLength: "", remarks: '' },
-      ]
-    },
-    {
-      budgetTermId: 1,
-      seq: 2,
-      isLocked: false,
-      warning: 'N',
-      escalation: "By Term",
-      leaseTermLength: '24/00',
-      evpTermLength: '00/30',
-      rfpTermLength: '00/15',
-      tenant: 'Vacant',
-      leaseExpireDate: new Date(2025, 11, 1),
-      itemEndDate: new Date(2025, 11, 31),
-      assumptionLevel: 'GL',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false,
-      isDirty: false,
-      budgetDetailTerms: [
+  public pcRowData = [];
+  public rentRowData = [];
+  public currentTermReadOnlyDataRow = [];
+  public editingTermAssumptionRowData = [];
 
-        { budgetTermId: 1, budgetTermDetailId: 6, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 1, budgetTermDetailId: 7, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 1, budgetTermDetailId: 8, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 1, budgetTermDetailId: 9, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 1, budgetTermDetailId: 10, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 1, budgetTermDetailId: 11, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-      ],
-      contractualTerms: [
-      ]
-    },
-    {
-      budgetTermId: 2,
-      seq: 3,
-      isLocked: false,
-      warning: 'N',
-      escalation: "By Term",
-      leaseTermLength: '24/00',
-      evpTermLength: '00/30',
-      rfpTermLength: '00/15',
-      tenant: 'Vacant',
-      leaseExpireDate: new Date(2025, 11, 1),
-      itemEndDate: new Date(2025, 11, 31),
-      assumptionLevel: 'GL',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false,
-      isDirty: false,
-      budgetDetailTerms: [
-
-        { budgetTermId: 2, budgetTermDetailId: 12, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 2, budgetTermDetailId: 13, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 2, budgetTermDetailId: 14, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 2, budgetTermDetailId: 15, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 2, budgetTermDetailId: 16, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 2, budgetTermDetailId: 17, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-      ],
-      contractualTerms: []
-    },
-    {
-      budgetTermId: 3,
-      seq: 4,
-      isLocked: false,
-      warning: 'N',
-      escalation: "By Term",
-      leaseTermLength: '24/00',
-      evpTermLength: '00/30',
-      rfpTermLength: '00/15',
-      tenant: 'Vacant',
-      leaseExpireDate: new Date(2025, 11, 1),
-      itemEndDate: new Date(2025, 11, 31),
-      assumptionLevel: 'GL',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false,
-      isDirty: false,
-      budgetDetailTerms: [
-
-        { budgetTermId: 3, budgetTermDetailId: 18, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 3, budgetTermDetailId: 19, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 3, budgetTermDetailId: 20, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 3, budgetTermDetailId: 21, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 3, budgetTermDetailId: 22, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 3, budgetTermDetailId: 23, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-      ],
-      contractualTerms: []
-    },
-    {
-      budgetTermId: 4,
-      seq: 5,
-      isLocked: false,
-      warning: 'N',
-      escalation: "By Term",
-      leaseTermLength: '24/00',
-      evpTermLength: '00/30',
-      rfpTermLength: '00/15',
-      tenant: 'Vacant',
-      leaseExpireDate: new Date(2025, 11, 1),
-      itemEndDate: new Date(2025, 11, 31),
-      assumptionLevel: 'GL',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false,
-      isDirty: false,
-      budgetDetailTerms: [
-
-        { budgetTermId: 4, budgetTermDetailId: 24, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 4, budgetTermDetailId: 25, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 4, budgetTermDetailId: 26, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 4, budgetTermDetailId: 27, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 4, budgetTermDetailId: 28, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 4, budgetTermDetailId: 29, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-      ],
-      contractualTerms: []
-    },
-    {
-      budgetTermId: 5,
-      seq: 6,
-      isLocked: false,
-      warning: 'N',
-      escalation: "By Term",
-      leaseTermLength: '24/00',
-      evpTermLength: '00/30',
-      rfpTermLength: '00/15',
-      tenant: 'Vacant',
-      leaseExpireDate: new Date(2025, 11, 1),
-      itemEndDate: new Date(2025, 11, 31),
-      assumptionLevel: 'GL',
-      firstRenew: true,
-      secondRenew: false,
-      thirdRenew: false,
-      isDirty: false,
-      budgetDetailTerms: [
-
-        { budgetTermId: 5, budgetTermDetailId: 30, isLocked: false, budgetTermName: '1st term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 5, budgetTermDetailId: 31, isLocked: false, budgetTermName: '1st term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 5, budgetTermDetailId: 32, isLocked: false, budgetTermName: '1st term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "01/00", remarks: '' },
-        { budgetTermId: 5, budgetTermDetailId: 33, isLocked: false, budgetTermName: '2nd term', termType: "Lease", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 5, budgetTermDetailId: 34, isLocked: false, budgetTermName: '2nd term', termType: "RVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-        { budgetTermId: 5, budgetTermDetailId: 35, isLocked: false, budgetTermName: '2nd term', termType: "EVP", from: new Date(2025, 11, 1), to: new Date(2025, 11, 31), termLength: "24/00", remarks: '' },
-      ],
-      contractualTerms: []
-    }
-  ];
-  public pcRowData = [
-    {
-      chargeCode: 'BASE RENT',
-      description: 'BASE RENT DESC.',
-      shop: 'shop 1',
-      startDate: '2017-11-01',
-      endDate: '31-10-2021',
-      bf: 'M',
-      amount: 90027.95
-    },
-    {
-      chargeCode: 'BASE RENT',
-      description: 'BASE RENT DESC.',
-      shop: 'shop 1',
-      startDate: '2017-11-01',
-      endDate: '31-10-2021',
-      bf: 'M',
-      amount: 90027.95
-    },
-    {
-      chargeCode: 'BASE RENT',
-      description: 'BASE RENT DESC.',
-      shop: 'shop 1',
-      startDate: '2017-11-01',
-      endDate: '31-10-2021',
-      bf: 'M',
-      amount: 90027.95
-    },
-    {
-      chargeCode: 'BASE RENT',
-      description: 'BASE RENT DESC.',
-      shop: 'shop 1',
-      startDate: '2017-11-01',
-      endDate: '31-10-2021',
-      bf: 'M',
-      amount: 90027.95
-    },
-    {
-      chargeCode: 'BASE RENT',
-      description: 'BASE RENT DESC.',
-      shop: 'shop 1',
-      startDate: '2017-11-01',
-      endDate: '31-10-2021',
-      bf: 'M',
-      amount: 90027.95
-    },
-  ]
-  public rentRowData = [
-    {
-      rrDate: '01-11-2021',
-      condition: 'OMR',
-      collarAmount: 103030,
-      collarRate: 10,
-      capAmount: 1049840,
-      capRate: 0.5
-    },
-    {
-      rrDate: '01-11-2021',
-      condition: 'OMR',
-      collarAmount: 103030,
-      collarRate: 10,
-      capAmount: 1049840,
-      capRate: 0.5
-    },
-    {
-      rrDate: '01-11-2021',
-      condition: 'OMR',
-      collarAmount: 103030,
-      collarRate: 10,
-      capAmount: 1049840,
-      capRate: 0.5
-    }
-  ]
-  public currentTermRowData = [
-    {
-      evpFrom: '2017-11-01',
-      evpTo: '2025-10-31',
-      md1: '96/00',
-      termForm: '2017-11-01',
-      termTo: '2025-10-31',
-      md2: '96/00',
-      renew: true,
-      remarks: 'testing'
-    },
-    {
-      evpFrom: '2017-11-01',
-      evpTo: '2025-10-31',
-      md1: '96/00',
-      termForm: '2017-11-01',
-      termTo: '2025-10-31',
-      md2: '96/00',
-      renew: true,
-      remarks: 'testing'
-    },
-    {
-      evpFrom: '2017-11-01',
-      evpTo: '2025-10-31',
-      md1: '96/00',
-      termForm: '2017-11-01',
-      termTo: '2025-10-31',
-      md2: '96/00',
-      renew: true,
-      remarks: 'testing'
-    },
-  ]
   private termGridApi: GridApi;
   private pcGridApi: GridApi;
   private rentGridApi: GridApi;
   private currentTermGridApi: GridApi;
-  private termGridColumnApi: ColumnApi;
   private pcGridColumnApi: ColumnApi;
   private rentGridColumnApi: ColumnApi;
-  private currentTermColumnApi: ColumnApi;
-  private termDetailGridApi: GridApi;
-  private termDetailGridColumnApi: ColumnApi;
-
+  private revenueGridApi: GridApi;
+  private revenueGridColumnApi: ColumnApi;
+  private currentTermReadonlyGridApi: GridApi;
+  private currentTermReadOnlyColumnApi: ColumnApi;
+  private editingTermAssumptionGridApi:GridApi;
+  private editingTermAssumptionColumnApi: ColumnApi;
   public components;
   public show: boolean = false;
+  public centreTop;
+  public centreLeft;
+  public width;
+
+  public get termAssumptionReadOnlyColDefs() {
+    return this.termAssumptionColDefService.termAssumptionReadOnlyColDefs;
+  }
+  public get rfpAssumptionReadOnlyColDefs() {
+    return this.termAssumptionColDefService.rfpAssumptionReadOnlyColDefs;
+  }
   public onToggle(): void {
     this.show = !this.show;
   }
@@ -328,9 +78,25 @@ export class MainLayoutComponent implements OnInit {
       duration: 200
     };
   }
-  public get termGridColDefs() {
-    return this.colDefService.termGridColumnDefs;
+  public get revenueDefaultColDefs() {
+    return this.revenueGridColDefService.defaultColDef;
   }
+  public get revenueRowData() {
+    return this.revenueGridColDefService.rowData;
+  }
+  public get revenueFooterRowData() {
+    return this.revenueGridColDefService.footerRowData;
+  }
+  public get revenueColDefs() {
+    return this.revenueGridColDefService.colDef;
+  }
+  public get revenueFooterColDefs() {
+    return this.revenueGridColDefService.footerColDef;
+  }
+  public get termAssumptionGridColDefs() {
+    return this.termAssumptionColDefService.termAssumptionColDefs;
+  }
+
   public get pcGridColDefs() {
     return this.colDefService.pcGridColumnDefs;
   }
@@ -340,79 +106,114 @@ export class MainLayoutComponent implements OnInit {
   public get currentTermColDefs() {
     return this.colDefService.currentTermGridColumnDefs;
   }
-  public byTermCellrendererParams;
+
+
+  public rfpAssumptionColDefs;
   constructor(
+    private router: Router,
     private gridDefService: GridDefService,
     private colDefService: ColDefService,
     private notificationService: NotificationService,
-    private buildTermDetailService: BuildTermDetailService
+    private buildBudgetTermByTermsService: BuildBudgetTermByTermsService,
+    private revenueGridColDefService: RevenueGridColDefService,
+    private termAssumptionColDefService: TermAssumptionColDefService,
+    private gridComponentService: GridComponentsService,
+    public dateRangeMDService: DateRangeMDService
   ) {
-    this.components = colDefService.components;
-    this.byTermCellrendererParams = this.colDefService.byTermCellrendererParams;
-    this.byTermCellrendererParams.detailGridOptions.onGridReady = this.onByTermDetailGridReady.bind(this);
-    this.byTermCellrendererParams.detailGridOptions.onSelectionChanged = this.onByTermDetailGridSelectionChanged.bind(this);
-    this.byTermCellrendererParams.detailGridOptions.getContextMenuItems = this.getDetailTermContextMenuItems.bind(this);
-    this.byTermCellrendererParams.detailGridOptions.context = { componentParent: this };
+    this.components = gridComponentService.components;
+    this.rfpAssumptionColDefs = this.termAssumptionColDefService.rfpAssumptionColDefs;
+    this.rfpAssumptionColDefs.detailGridOptions.onGridReady = this.onRfpAssumptionGridReady.bind(this);
+    this.rfpAssumptionColDefs.detailGridOptions.getContextMenuItems = this.getDetailTermContextMenuItems.bind(this);
+    this.rfpAssumptionColDefs.detailGridOptions.context = { componentParent: this };
+    this.revenueGridOptions.alignedGrids.push(this.revenueFooterGridOptions);
+    this.revenueFooterGridOptions.alignedGrids.push(this.revenueGridOptions);
   }
 
-  public get getTermMenu() {
-    return this.getTermContextMenuItems.bind(this);
-  }
+
   ngOnInit() {
+    this.showDataRow = this.revenueRowData[0];
+    this.pcRowData = this.showDataRow.pcCharges;
+    this.rentRowData = this.showDataRow.rentReviews;
+    this.currentTermReadOnlyDataRow = this.showDataRow.currentTermAssumptions;
+    this.editingTermAssumptionRowData = this.showDataRow.editingTermAssumptions;
   }
-
+  onCellFocused(event) {
+    if (event.rowIndex == null)
+      return;
+    var row = this.revenueGridApi.getDisplayedRowAtIndex(event.rowIndex);
+    this.showDataRow = row.data;
+    this.pcRowData = row.data.pcCharges;
+    this.rentRowData = row.data.rentReviews;
+    this.currentTermReadOnlyDataRow = this.showDataRow.currentTermAssumptions;
+    this.editingTermAssumptionRowData = this.showDataRow.editingTermAssumptions;
+  }
+  public goHomePage() {
+    this.router.navigateByUrl('')
+  }
   addRowToDetail(params) {
     var bugetTerm: BudgetTerm = params.node.data;
     var newRow = { budgetTermId: bugetTerm.budgetTermId, budgetTermDetailId: 0, budgetTermName: 'New Term', isLocked: false, termType: "", from: new Date(), to: new Date(), termLength: "00/00", remarks: '' };
-    var budget = this.rowData.filter(x => x.budgetTermId == bugetTerm.budgetTermId)[0];
+    //var budget = this.rowData.filter(x => x.budgetTermId == bugetTerm.budgetTermId)[0];
 
-    budget.budgetDetailTerms.push(newRow);
+    //budget.budgetDetailTerms.push(newRow);
     params.api.updateRowData({ add: [newRow], addIndex: 0 });
-    this.detailValueChanged(newRow);
-
   }
-  deleteRow(params){
+  deleteRow(params) {
     var row = params.node.data;
 
-    this.detailValueChanged(row);
-    var budgetTerm = this.rowData.filter(x=>x.budgetTermId == row.budgetTermId)[0];
-    budgetTerm.budgetDetailTerms = budgetTerm.budgetDetailTerms.filter(x=>x.budgetTermDetailId != row.budgetTermDetailId);
-    params.api.updateRowData({remove: [row]});
+    //var budgetTerm = this.rowData.filter(x=>x.budgetTermId == row.budgetTermId)[0];
+    //budgetTerm.budgetDetailTerms = budgetTerm.budgetDetailTerms.filter(x=>x.budgetTermDetailId != row.budgetTermDetailId);
+    params.api.updateRowData({ remove: [row] });
 
   }
-  rebuildDetail(params){
-    var budgetTerm: BudgetTerm = params.node.data;
-    var row = this.rowData.filter(x=>x.budgetTermId == budgetTerm.budgetTermId)[0];
+  rebuildDetail(params) {
+    var data: any = params.node.data;
 
-    this.buildTermDetailService.budgetTerm = budgetTerm;
-    this.buildTermDetailService.execute();
+    this.buildBudgetTermByTermsService.budgetTerm = data;
+    this.buildBudgetTermByTermsService.execute();
 
-    row.budgetDetailTerms = [...this.buildTermDetailService.budgetDetailTerms];
+    data.currentTermAssumptions = this.buildBudgetTermByTermsService.currentTermAssumptions;
+    data.editingTermAssumptions = _.cloneDeep(data.currentTermAssumptions);
+    this.editingTermAssumptionRowData = data.editingTermAssumptions;
 
-    if(params.node.detailNode.detailGridInfo != undefined){
-      params.node.detailNode.detailGridInfo.api.setRowData([]);
-      params.node.detailNode.detailGridInfo.api.updateRowData({add: [...row.contractualTerms, ...this.buildTermDetailService.budgetDetailTerms]});
+    if (this.currentTermReadonlyGridApi) {
+      this.currentTermReadonlyGridApi.setRowData([]);
+      this.currentTermReadonlyGridApi.updateRowData({ add: data.currentTermAssumptions });
     }
+
   }
   print() {
-    console.log('rowData', this.rowData);
+    //console.log('rowData', this.rowData);
   }
-  onByTermDetailGridReady(params) {
-    this.termDetailGridApi = params.api;
-    this.termDetailGridColumnApi = params.columnApi;
-  }
-  onTermGridReady(params) {
-    this.termGridApi = params.api;
-    this.termGridColumnApi = params.columnApi;
-    this.gridDefService.getGridDef("termGrid").subscribe(response => {
+  onRevenueGridReady(params) {
+    this.revenueGridApi = params.api;
+    this.revenueGridColumnApi = params.columnApi;
+    this.revenueGridColumnApi.autoSizeAllColumns();
+    this.gridDefService.getGridDef("revenueGrid").subscribe(response => {
       if (response.gridDef != null) {
-        this.configGrid(this.termGridApi, this.termGridColumnApi, response.gridDef);
+        this.configGrid(this.revenueGridApi, this.revenueGridColumnApi, response.gridDef);
       }
     })
+  }
+  onRevenueFooterGridReady(params) {
+
+  }
+  onCurrentTermReadOnlyGridReady(params) {
+    this.currentTermReadonlyGridApi = params.api
+    this.currentTermReadOnlyColumnApi = params.columnApi;
+  }
+  onRfpAssumptionGridReady(params) {
+  }
+
+  onEditingTermAssumptionGridReady(params) {
+    this.editingTermAssumptionGridApi = params.api;
+    this.editingTermAssumptionColumnApi = params.columnApi;
+    this.editingTermAssumptionColumnApi.autoSizeAllColumns();
   }
   onPCGridReady(params) {
     this.pcGridApi = params.api;
     this.pcGridColumnApi = params.columnApi;
+    this.pcGridColumnApi.autoSizeAllColumns();
     this.gridDefService.getGridDef("pcGrid").subscribe(response => {
       if (response.gridDef != null) {
         this.configGrid(this.pcGridApi, this.pcGridColumnApi, response.gridDef);
@@ -422,21 +223,23 @@ export class MainLayoutComponent implements OnInit {
   onRentGridReady(params) {
     this.rentGridApi = params.api;
     this.rentGridColumnApi = params.columnApi;
+    this.rentGridColumnApi.autoSizeAllColumns();
     this.gridDefService.getGridDef("rentGrid").subscribe(response => {
       if (response.gridDef != null) {
         this.configGrid(this.rentGridApi, this.rentGridColumnApi, response.gridDef);
       }
     })
   }
-  onCurrentTermGridReady(params) {
-    this.currentTermGridApi = params.api;
-    this.currentTermColumnApi = params.columnApi;
-    this.gridDefService.getGridDef("currentTermGrid").subscribe(response => {
-      if (response.gridDef != null) {
-        this.configGrid(this.currentTermGridApi, this.currentTermColumnApi, response.gridDef);
-      }
-    })
-  }
+  // onCurrentTermGridReady(params) {
+  //   this.currentTermGridApi = params.api;
+  //   this.currentTermColumnApi = params.columnApi;
+  //   this.currentTermColumnApi.autoSizeAllColumns();
+  //   this.gridDefService.getGridDef("currentTermGrid").subscribe(response => {
+  //     if (response.gridDef != null) {
+  //       this.configGrid(this.currentTermGridApi, this.currentTermColumnApi, response.gridDef);
+  //     }
+  //   })
+  // }
   configGrid(gridApi: GridApi, columnApi: ColumnApi, gridDef: GridDef) {
     var colStates = gridDef.colStates;
     var sortModels = gridDef.sortModels;
@@ -446,10 +249,6 @@ export class MainLayoutComponent implements OnInit {
   }
   saveGrids() {
     var responses = [];
-    if (this.termGridApi != undefined) {
-      var r = this.saveGrid("termGrid", this.termGridApi, this.termGridColumnApi);
-      responses.push(r);
-    }
     if (this.pcGridApi != undefined) {
       var r = this.saveGrid("pcGrid", this.pcGridApi, this.pcGridColumnApi);
       responses.push(r);
@@ -458,8 +257,9 @@ export class MainLayoutComponent implements OnInit {
       var r = this.saveGrid("rentGrid", this.rentGridApi, this.rentGridColumnApi);
       responses.push(r);
     }
-    if (this.currentTermGridApi != undefined) {
-      var r = this.saveGrid("currentTermGrid", this.currentTermGridApi, this.currentTermColumnApi);
+
+    if (this.revenueGridApi != undefined) {
+      var r = this.saveGrid("revenueGrid", this.revenueGridApi, this.revenueGridColumnApi);
       responses.push(r);
     }
 
@@ -489,70 +289,26 @@ export class MainLayoutComponent implements OnInit {
 
     return this.gridDefService.save(gridDef);
   }
-  public selectedRowsString = '';
-  public detailSelectedRowsString = ''
-  onByTermDetailGridSelectionChanged(event) {
-    var selectedRows = this.termDetailGridApi.getSelectedRows();
-    var selectedRowsString = '';
-    selectedRows.forEach(function (selectedRow, index) {
-      if (index > 5) {
-        return;
-      }
-      if (index !== 0) {
-        selectedRowsString += ", ";
-      }
-      selectedRowsString += selectedRow.tenant;
-    });
-    if (selectedRows.length >= 5) {
-      selectedRowsString += " - and " + (selectedRows.length - 5) + " others";
-    }
-    this.detailSelectedRowsString = selectedRowsString;
-    console.log('select detail');
-    this.termGridApi.stopEditing();
+
+  public get getEditingTermMenu() {
+    return this.getEditingTermAssumptionContextMenuItems.bind(this);
   }
-  onSelectionChanged(event) {
-    var selectedRows = this.termGridApi.getSelectedRows();
-    var selectedRowsString = "";
-    selectedRows.forEach(function (selectedRow, index) {
-      if (index > 5) {
-        return;
-      }
-      if (index !== 0) {
-        selectedRowsString += ", ";
-      }
-      selectedRowsString += selectedRow.tenant;
-    });
-
-    if (selectedRows.length >= 5) {
-      selectedRowsString += " - and " + (selectedRows.length - 5) + " others";
-    }
-    this.selectedRowsString = selectedRowsString;
-    this.termDetailGridApi.stopEditing();
+  public close() {
+    this.showEditTermGrid = false;
   }
-
-  public detailValueChanged(any) {
-
-    if (any.budgetTermId == undefined || any.budgetTermId == null)
-      return;
-
-    var parentRow = this.rowData.filter(x => x.budgetTermId == any.budgetTermId)[0];
-
-    parentRow.isDirty = true;
-
-    this.termGridApi.refreshCells();
-  }
-
-  getTermContextMenuItems(params) {
+  getEditingTermAssumptionContextMenuItems(params) {
     var menuItems = [];
     var budgetTerm = params.node.data;
 
-    if(budgetTerm != null && budgetTerm.isLocked == false){
+    console.log('menu params',params);
+    if (budgetTerm != null && budgetTerm.isLocked == false) {
       menuItems.push({
         name: "Rebuild Detail",
-        action: ()=>{
+        action: () => {
           this.rebuildDetail(params);
         }
-      })
+      }
+      );
     }
     menuItems.push("separator");
     menuItems.push("copy");
@@ -562,12 +318,60 @@ export class MainLayoutComponent implements OnInit {
     return menuItems;
   }
 
+  public get getRevenueMenu() {
+    return this.getRevenueContextMenuItems.bind(this);
+  }
+  getRevenueContextMenuItems(params) {
+    var menuItems = [];
+    var budgetTerm = params.node.data;
+    console.log('revenue param', params);
+    if (budgetTerm != null && budgetTerm.isLocked == false) {
+      menuItems.push({
+        name: "Rebuild Terms",
+        action: () => {
+          this.rebuildDetail(params);
+        }
+      });
+      menuItems.push({
+        name: "Edit Terms",
+        action: () => {
+          this.showEditTermGrid = true;
+          this.centreTop = 20;
+          this.width = window.innerWidth * 0.5;
+          this.centreLeft = (window.innerWidth - this.width) / 2;
+        }
+      });
+
+      if (!budgetTerm.isLocked) {
+        menuItems.push({
+          name: "Lock",
+          action: () => {
+            budgetTerm.isLocked = true;
+          }
+        })
+      }
+    } else {
+      menuItems.push({
+        name: "Un-Lock",
+        action: () => {
+          budgetTerm.isLocked = false;
+        }
+      })
+    }
+
+    menuItems.push("separator");
+    menuItems.push("copy");
+    menuItems.push("copyWithHeaders");
+    menuItems.push("export");
+
+    return menuItems;
+  }
+
   getBudgetTerm(budgetTermId: number): BudgetTerm {
-    return this.rowData.filter(x => x.budgetTermId == budgetTermId)[0];
+    return this.revenueRowData.filter(x => x.budgetTermId == budgetTermId)[0];
   }
 
   getDetailTermContextMenuItems(params) {
-    console.log('menu params', params);
     var menuItems = [];
     var budgetTermId = params.node.data.budgetTermId;
     var budgetTerm = this.getBudgetTerm(budgetTermId);

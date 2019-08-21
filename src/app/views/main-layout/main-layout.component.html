@@ -1,205 +1,291 @@
 <div class="k-toolbar">
-    <button kendoButton [icon]="'arrow-down'" #anchor (click)="onToggle()" class="k-button">Actions</button>
-    <button class="k-button" (click)="saveGrids()">Save Grid Settings</button>
-    <button (click)="print()">Print</button>
+  <button kendoButton [icon]="'arrow-left'" #anchor (click)="goHomePage()" class="k-button">Back</button>
+  <button kendoButton [icon]="'arrow-down'" #anchor (click)="onToggle()" class="k-button">Actions</button>
+  <button class="k-button" (click)="saveGrids()">Save Grid Settings</button>
+  <button (click)="print()">Print</button>
 </div>
-  <kendo-popup style="width: 100%;" type="slide" [anchor]="anchor" [popupClass]="'content popup'" *ngIf="show">
-    <div style="width: 100%;height: 300px;background-color: rgb(245,247,248);padding:30px;">
-        <div class="row expand-menu">
-            <div class="col-3 column">
-                <h6>Approve</h6>
-                <ul>
-                  <li>View Approve History</li>
-                </ul>
-            </div>
-            <div class="col-3 column">
-                <h6>Assumption</h6>
-                <ul>
-                  <li>Explorer</li>                    
-                  <li>Set Globle Assumption</li>                    
-                  <li>Set Group Assumption</li>                    
-                  <li>Set Individual Assumption</li>                    
-                </ul>
-            </div>
-            <div class="col-3 column">
-                <h6>Item</h6>
-                <ul>
-                  <li>Merge Split</li>                    
-                  <li>Edit Item Info</li>                    
-                  <li>Add Dummy Item</li>                    
-                  <li>Select All</li>     
-                  <li>Lock</li>  
-                  <li>UnLock</li>  
-                  <li>Delete</li>                 
-                </ul>
-            </div>
-            <div class="col-3 column">
-                <h6>Item</h6>
-                <ul>
-                  <li>Merge Split</li>                    
-                  <li>Edit Item Info</li>                    
-                  <li>Add Dummy Item</li>                    
-                  <li>Select All</li>     
-                  <li>Lock</li>  
-                  <li>UnLock</li>  
-                  <li>Delete</li>                 
-                </ul>
-            </div>
-        </div>
+<kendo-popup style="width: 100%;" type="slide" [anchor]="anchor" [popupClass]="'content popup'" *ngIf="show">
+  <div style="width: 100%;height: 300px;background-color: rgb(245,247,248);padding:30px;">
+    <div class="row expand-menu">
+      <div class="col-3 column">
+        <h6>Approve</h6>
+        <ul>
+          <li>View Approve History</li>
+        </ul>
+      </div>
+      <div class="col-3 column">
+        <h6>Assumption</h6>
+        <ul>
+          <li>Explorer</li>
+          <li>Set Globle Assumption</li>
+          <li>Set Group Assumption</li>
+          <li>Set Individual Assumption</li>
+        </ul>
+      </div>
+      <div class="col-3 column">
+        <h6>Item</h6>
+        <ul>
+          <li>Merge Split</li>
+          <li>Edit Item Info</li>
+          <li>Add Dummy Item</li>
+          <li>Select All</li>
+          <li>Lock</li>
+          <li>UnLock</li>
+          <li>Delete</li>
+        </ul>
+      </div>
+      <div class="col-3 column">
+        <h6>Item</h6>
+        <ul>
+          <li>Merge Split</li>
+          <li>Edit Item Info</li>
+          <li>Add Dummy Item</li>
+          <li>Select All</li>
+          <li>Lock</li>
+          <li>UnLock</li>
+          <li>Delete</li>
+        </ul>
+      </div>
     </div>
-    </kendo-popup>
-    <kendo-splitter orientation="vertical" style="height: calc(100% - 170px);">
+  </div>
+</kendo-popup>
+
+<kendo-splitter orientation="vertical" style="height: calc(100% - 105px);padding: 4px;">
+  <kendo-splitter-pane>
+    <kendo-splitter>
       <kendo-splitter-pane>
-        <kendo-splitter>
-          <kendo-splitter-pane>
-            <div class="pane-content" style="height: 100%;background-color:#f8f9fa;">
-                <ag-grid-angular #termGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;" [enableRangeSelection]="false" [rowSelection]="'multiple'"
-                  id="termGrid" class="ag-theme-balham" [columnDefs]="termGridColDefs" (gridReady)="onTermGridReady($event)" [components]="components"
-                  [singleClickEdit]="true" [rowData]="rowData" [masterDetail]="true" [detailCellRendererParams]="byTermCellrendererParams"
-                  (selectionChanged)="onSelectionChanged($event)" [getContextMenuItems]="getTermMenu">
-                </ag-grid-angular>
+        <!-- <div *ngIf="showTermGrid" class="pane-content" style="height: 100%;background-color:#f8f9fa;">
+          <ag-grid-angular #termGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;"
+            [enableRangeSelection]="false" [rowSelection]="'multiple'" id="termGrid" class="ag-theme-balham"
+            [columnDefs]="termGridColDefs" (gridReady)="onTermGridReady($event)" [components]="components"
+            [singleClickEdit]="true" [rowData]="rowData" [masterDetail]="true"
+            [detailCellRendererParams]="byTermCellrendererParams" (selectionChanged)="onSelectionChanged($event)"
+            [getContextMenuItems]="getTermMenu">
+          </ag-grid-angular>
+        </div> -->
+        <div class="pane-content" style="height: 100%;">
+          <div class="row" style="margin-left:0px;margin-right:0px;">
+            <div class="col-12 d-none d-xl-block d-lg-block" style="display: flex;text-align: right;padding-bottom: 2px;">
+              <i style="background-color: rgba(255, 251, 175, 0.4); color: rgba(255, 251, 175, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);padding:-1;" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Contractual Figures</span>
+              <i style="background-color: rgba(255,58,40, 0.4); color: rgba(255,58,40, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Expiry Void Period</span>
+              <i style="background-color: rgba(255, 128, 171, 0.4);color: rgba(255, 128, 171, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Bi-Void Period</span>
+              <i style="background-color: rgba(185, 247, 202, 0.4);color: rgba(185, 247, 202, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Forecasting Figures</span>
+              <i style="background-color: rgba(127,255,255, 0.4);color: rgba(127,255,255, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Rent Free Period</span>
+              <i style="background-color: rgba(255,178,127, 0.4);color: rgba(255,178,127, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Rent Review</span>
             </div>
-          </kendo-splitter-pane>
-        </kendo-splitter>
-      </kendo-splitter-pane>
-      <kendo-splitter-pane [collapsible]="true" [resizable]="true" size="45%">
-        <kendo-splitter>
-          <kendo-splitter-pane>
-            <div class="row" style="padding-left: 0px;padding-right:0px;margin-left:0px;margin-right: 0px;">
-              <div class="col-9" style="padding-left:0px">
-                <kendo-tabstrip style="height: 100%">
-                  <kendo-tabstrip-tab [title]="'Periodic Charge'" style="height: 100%" [selected]="true">
-                    <ng-template kendoTabContent style="height: 100%">
-                      <div class="pane-content" style="height: 100%;padding: 10px;">
-                        <div class="row" style="height:100%">
-                          <ag-grid-angular #pcGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;" [enableRangeSelection]="true"
-                            id="pcGrid" class="ag-theme-balham" [columnDefs]="pcGridColDefs"
-                            (gridReady)="onPCGridReady($event)" [rowData]="pcRowData"></ag-grid-angular>
-                        </div>
-                      </div>
-                    </ng-template>
-                  </kendo-tabstrip-tab>
-                  <kendo-tabstrip-tab [title]="'Rent Review'">
-                    <ng-template kendoTabContent>
-                      <div class="pane-content" style="height: 100%;padding: 10px;">
-                        <div class="row" style="height:100%">
-                          <ag-grid-angular #rentGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;" [enableRangeSelection]="true"
-                            id="rentGrid" class="ag-theme-balham" [columnDefs]="rentGridColDefs"
-                            (gridReady)="onRentGridReady($event)" [rowData]="rentRowData"></ag-grid-angular>
-                        </div>
-                      </div>
-                    </ng-template>
-                  </kendo-tabstrip-tab>
-                  <kendo-tabstrip-tab [title]="'Current Term Assumption'">
-                    <ng-template kendoTabContent>
-                      <div class="pane-content" style="height: 100%;padding: 10px;">
-                        <div class="row" style="height:100%">
-                          <ag-grid-angular #currentTermGrid [defaultColDef]="defaultColDef"
-                            style="width: 100%; height: 100%;" id="currentTermGrid" class="ag-theme-balham" [enableRangeSelection]="true"
-                            [columnDefs]="currentTermColDefs" (gridReady)="onCurrentTermGridReady($event)"
-                            [rowData]="currentTermRowData"></ag-grid-angular>
-                        </div>
-                      </div>
-                    </ng-template>
-                  </kendo-tabstrip-tab>
-                </kendo-tabstrip>
+            <div class="col-12 d-none d-sm-block d-md-block d-lg-none" style="display: flex;text-align: right;">
+              <i style="background-color: rgba(255, 251, 175, 0.4); color: rgba(255, 251, 175, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Contractual Figures</span>
+              <i style="background-color: rgba(255,58,40, 0.4); color: rgba(255,58,40, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Expiry Void Period</span>
+              <i style="background-color: rgba(255, 128, 171, 0.4);color: rgba(255, 128, 171, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Bi-Void Period</span>
+            </div>
+            <div class="col-12 d-none d-sm-block d-md-block d-lg-none" style="display: flex;text-align: right;">
+              <i style="background-color: rgba(185, 247, 202, 0.4);color: rgba(185, 247, 202, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Forecasting Figures</span>
+              <i style="background-color: rgba(127,255,255, 0.4);color: rgba(127,255,255, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Rent Free Period</span>
+              <i style="background-color: rgba(255,178,127, 0.4);color: rgba(255,178,127, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+              <span style="margin-left:10px;margin-right: 10px">Rent Review</span>
+            </div>
+            <div class="col-12 d-block d-sm-none" style="display: flex">
+              <div>
+                <i style="background-color: rgba(255, 251, 175, 0.4); color: rgba(255, 251, 175, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+                <span style="margin-left:10px;margin-right: 10px">Contractual Figures</span>
               </div>
-              <div class="col-3">
+              <div>
+                <i style="background-color: rgba(255,58,40, 0.4); color: rgba(255,58,40, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+                <span style="margin-left:10px;margin-right: 10px">Expiry Void Period</span>
+              </div>
+              <div>
+                <i style="background-color: rgba(255, 128, 171, 0.4);color: rgba(255, 128, 171, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+                <span style="margin-left:10px;margin-right: 10px">Bi-Void Period</span>
+              </div>
+              <div>
+                <i style="background-color: rgba(185, 247, 202, 0.4);color: rgba(185, 247, 202, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+                <span style="margin-left:10px;margin-right: 10px">Forecasting Figures</span>
+              </div>
+              <div>
+                <i style="background-color: rgba(127,255,255, 0.4);color: rgba(127,255,255, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+                <span style="margin-left:10px;margin-right: 10px">Rent Free Period</span>
+              </div>
+              <div>
+                <i style="background-color: rgba(255,178,127, 0.4);color: rgba(255,178,127, 0.4); border-width: 2px;border-style: solid;border-color: rgba(215, 215, 215, 1);" class="fas fa-square"></i>
+                <span style="margin-left:10px;margin-right: 10px">Rent Review</span>
+              </div>
+            </div>
+          </div>
+          <ag-grid-angular #termGrid [defaultColDef]="revenueDefaultColDefs"
+            style="width: 100%; height: calc(100% - 90px);" id="revenueGrid" class="ag-theme-balham"
+            [columnDefs]="revenueColDefs" (gridReady)="onRevenueGridReady($event)" [components]="components"
+            [rowSelection]="'multiple'" [rowData]="revenueRowData" [floatingFilter]="true" [singleClickEdit]="true"
+            [suppressRowClickSelection]="'true'" (cellFocused)="onCellFocused($event)"
+            [gridOptions]="revenueGridOptions" [getContextMenuItems]="getRevenueMenu">
+          </ag-grid-angular>
+          <ag-grid-angular #termFooterGrid [defaultColDef]="revenueDefaultColDefs" headerHeight="0"
+            style="width: 100%; height: 60px" id="revenueGrid" class="ag-theme-balham"
+            [columnDefs]="revenueFooterColDefs" (gridReady)="onRevenueFooterGridReady($event)"
+            [rowData]="revenueFooterRowData" [gridOptions]="revenueFooterGridOptions">
+          </ag-grid-angular>
+        </div>
+      </kendo-splitter-pane>
+    </kendo-splitter>
+  </kendo-splitter-pane>
+  <kendo-splitter-pane [collapsible]="true" [resizable]="true" size="30%">
+    <kendo-splitter>
+      <kendo-splitter-pane>
+        <div class="row"
+          style="height:100%;padding-left: 0px;padding-right:0px;margin-left:0px;margin-right: 0px;padding-top:10px;">
+          <div class="col-9" style="padding-left:0px">
+            <kendo-tabstrip style="height: 100%">
+              <kendo-tabstrip-tab [title]="'Periodic Charge'" style="height: 100%" [selected]="true">
+                <ng-template kendoTabContent style="height: 100%">
+                  <div class="pane-content" style="height: 100%;padding: 10px;">
+                    <div class="row" style="height:100%">
+                      <ag-grid-angular #pcGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;"
+                        [enableRangeSelection]="true" id="pcGrid" class="ag-theme-balham" [columnDefs]="pcGridColDefs"
+                        (gridReady)="onPCGridReady($event)" [rowData]="pcRowData"></ag-grid-angular>
+                    </div>
+                  </div>
+                </ng-template>
+              </kendo-tabstrip-tab>
+              <kendo-tabstrip-tab [title]="'Rent Review'">
+                <ng-template kendoTabContent>
+                  <div class="pane-content" style="height: 100%;padding: 10px;">
+                    <div class="row" style="height:100%">
+                      <ag-grid-angular #rentGrid [defaultColDef]="defaultColDef" style="width: 100%; height: 100%;"
+                        [enableRangeSelection]="true" id="rentGrid" class="ag-theme-balham"
+                        [columnDefs]="rentGridColDefs" (gridReady)="onRentGridReady($event)" [rowData]="rentRowData">
+                      </ag-grid-angular>
+                    </div>
+                  </div>
+                </ng-template>
+              </kendo-tabstrip-tab>
+              <kendo-tabstrip-tab [title]="'Current Term Assumption'">
+                <ng-template kendoTabContent>
+                  <div class="pane-content" style="height: 100%;padding: 10px;">
+                    <div class="row" style="height:100%">
+                      <ag-grid-angular #currentTermGrid [defaultColDef]="defaultColDef"
+                        style="width: 100%; height: 100%;" id="currentTermGrid" class="ag-theme-balham"
+                        [enableRangeSelection]="true" [columnDefs]="termAssumptionReadOnlyColDefs"
+                        [masterDetail]="true" [detailRowHeight]="150"
+                        [detailCellRendererParams]="rfpAssumptionReadOnlyColDefs"
+                        (gridReady)="onCurrentTermReadOnlyGridReady($event)" [rowData]="currentTermReadOnlyDataRow"></ag-grid-angular>
+                    </div>
+                  </div>
+                </ng-template>
+              </kendo-tabstrip-tab>
+            </kendo-tabstrip>
+          </div>
+          <div class="col-3" style="border-left: 1px solid #e2e4e7;">
+            <div *ngIf="showDataRow != null" class="row">
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
                 <div class="row">
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Unit Ref.</div>
-                      <div class="col-12">16/F</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Lease No.</div>
-                      <div class="col-12">CA000000192</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">B.U</div>
-                      <div class="col-12">067010</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Comm. Date</div>
-                      <div class="col-12">01-Sep-2016</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Exp. date</div>
-                      <div class="col-12">31-Aug-2022</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Last Sync. Date</div>
-                      <div class="col-12">16-Apr-2018 16:42:31</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Tenant</div>
-                      <div class="col-12">CA000000192</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Floor</div>
-                      <div class="col-12">16/F</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Tenant</div>
-                      <div class="col-12">CA000000192</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Floor</div>
-                      <div class="col-12">16/F</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Trade Category</div>
-                      <div class="col-12">Trade 1</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Trade Sub-Category</div>
-                      <div class="col-12">Sub-Trade 2</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Item Start Date</div>
-                      <div class="col-12">01-Jan-2018</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Item End date</div>
-                      <div class="col-12">31-Dec-2020</div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="row">
-                      <div class="col-12" style="font-weight: 700;margin-top: 5px;">Weighted Area(sf)</div>
-                      <div class="col-12">19331</div>
-                    </div>
-                  </div>
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Unit</div>
+                  <div class="col-12">{{showDataRow.unit}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Lease No.</div>
+                  <div class="col-12">{{showDataRow.leaseNo}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">B.U</div>
+                  <div class="col-12">{{showDataRow.businessUnit}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Comm. Date</div>
+                  <div class="col-12">{{showDataRow.commDate | date: 'dd-MM-yyyy'}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Exp. date</div>
+                  <div class="col-12">{{showDataRow.expiryDate | date: 'dd-MM-yyyy'}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Last Sync. Date</div>
+                  <div class="col-12">{{showDataRow.lastSyncDate | date: 'dd-MM-yyyy'}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Tenant</div>
+                  <div class="col-12">{{showDataRow.tenant}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Floor</div>
+                  <div class="col-12">{{showDataRow.floor}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Trade Category</div>
+                  <div class="col-12">{{showDataRow.trade}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Trade Sub-Category</div>
+                  <div class="col-12">{{showDataRow.subTrade}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Item Start Date</div>
+                  <div class="col-12">{{showDataRow.itemStartDate | date: 'dd-MM-yyyy'}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Item End date</div>
+                  <div class="col-12">{{showDataRow.itemEndDate | date: 'dd-MM-yyyy'}}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="row">
+                  <div class="col-12" style="font-weight: 700;margin-top: 5px;">Weighted Area(sf)</div>
+                  <div class="col-12">{{showDataRow.weightedArea}}</div>
                 </div>
               </div>
             </div>
-          </kendo-splitter-pane>
-        </kendo-splitter>
+            <div *ngIf="showDataRow == null">
+              Mouse on row to show data.
+            </div>
+          </div>
+        </div>
       </kendo-splitter-pane>
     </kendo-splitter>
+  </kendo-splitter-pane>
+</kendo-splitter>
+
+<kendo-window title="Edit Term Assumption" *ngIf="showEditTermGrid" (close)="close()" [top]="0" [left]="centreLeft" [minWidth]="250"
+    [width]="width" [height]="730">
+    <div class="k-toolbar">
+        <button kendoButton #anchor (click)="close()" class="k-button">Save</button>
+      </div>
+
+    <ag-grid-angular [defaultColDef]="defaultColDef" style="width: 100%; height: calc( 100% - 45px);"
+    [enableRangeSelection]="false"  class="ag-theme-balham"
+    [columnDefs]="termAssumptionGridColDefs" (gridReady)="onEditingTermAssumptionGridReady($event)" [components]="components"
+    [singleClickEdit]="true" [rowData]="editingTermAssumptionRowData" [masterDetail]="true" [detailRowHeight]="150"
+    [detailCellRendererParams]="rfpAssumptionColDefs" [context]="gridContext"
+    [getContextMenuItems]="getEditingTermMenu">
+  </ag-grid-angular>
+</kendo-window>

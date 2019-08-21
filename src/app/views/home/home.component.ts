@@ -7,6 +7,7 @@ import { ColumnState } from 'ag-grid-community/dist/lib/columnController/columnC
 import { forkJoin } from 'rxjs';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 
 @Component({
   selector: 'app-home',
@@ -94,13 +95,19 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private gridDefService: GridDefService,
     private colDefService: ColDefService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private msalService: MsalService
   ) {
     this.budgetListDetailCellRendererParams = this.colDefService.budgetListDetailCellRendererParams;
     this.budgetListDetailCellRendererParams.detailGridOptions.onGridReady = this.detailGridReady.bind(this);
     this.budgetListDetailCellRendererParams.detailGridOptions.getContextMenuItems = this.getContextMenuItems.bind(this);
   }
-
+  public get name(){
+    if(this.msalService.getUser())
+    return this.msalService.getUser().name;
+    else
+    return '';
+  }
   saveGrids() {
     var responses = [];
     if (this.gridApi != undefined) {
@@ -140,6 +147,10 @@ export class HomeComponent implements OnInit {
 
     console.log('detail', this.budgetListDetailCellRendererParams)
     return this.gridDefService.save(gridDef);
+  }
+  logout()
+  {
+   this.msalService.logout();
   }
   configGrid(gridApi: GridApi, columnApi: ColumnApi, gridDef: GridDef) {
     var colStates = gridDef.colStates;

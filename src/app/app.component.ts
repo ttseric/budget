@@ -73,31 +73,31 @@ export class AppComponent {
   public rowData = [
     {
       year: 2014, type: '5-year budget', description: 'Budget ID 1796', hyperionVersion: '4', lastUploadDate: '10-Sep-2014', lastModifiedDate: '05-Aug-2014 15:33',
-      versions:[
-        {version: "1", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "2", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "3", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "4", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
+      versions: [
+        { version: "1", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "2", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "3", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "4", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
 
       ]
     },
     {
       year: 2015, type: '5-year budget', description: 'Budget ID 1796', hyperionVersion: '4', lastUploadDate: '10-Sep-2014', lastModifiedDate: '05-Aug-2014 15:33',
-      versions:[
-        {version: "1", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "2", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "3", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "4", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
+      versions: [
+        { version: "1", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "2", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "3", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "4", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
 
       ]
     },
     {
       year: 2016, type: '5-year budget', description: 'Budget ID 1796', hyperionVersion: '4', lastUploadDate: '10-Sep-2014', lastModifiedDate: '05-Aug-2014 15:33',
-      versions:[
-        {version: "1", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "2", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "3", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
-        {version: "4", remarks:'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0'},
+      versions: [
+        { version: "1", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "2", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "3", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
+        { version: "4", remarks: 'BV_ID 4673', status: 'Frozen', lockedBy: 'spl\erictstsang', lastModifiedDate: '04-Mar-2014 12:01', whatIfVersions: '0' },
 
       ]
     },
@@ -119,24 +119,16 @@ export class AppComponent {
     private broadcastService: BroadcastService,
     private msalService: MsalService,
     private authService: AuthenticationService
-    ) {
-      console.log('get user', this.msalService.getUser());
-      console.log('token internal', this.msalService.getCachedTokenInternal(["user.read"]));
-      console.log('cache', this.msalService.getCacheStorage());
-      console.log('service' ,this.msalService);
-      this.msalService.acquireTokenSilent(['user.read']).then(x=>{
-        console.log('token', x);
-      })
-      this.isIframe = window !== window.parent && !window.opener;
-      if(this.msalService.getUser())
-      {
-     //   this.loggedIn = true;
-      }
-     else {
-       //console.log('go login');
-      //this.login();
-     }
+  ) {
 
+    console.log('get user', this.msalService.getUser());
+    console.log('token internal', this.msalService.getCachedTokenInternal(["user.read"]));
+    console.log('cache', this.msalService.getCacheStorage());
+    console.log('service', this.msalService);
+    this.msalService.acquireTokenSilent(['user.read']).then(x => {
+      console.log('token', x);
+    })
+    this.isIframe = window !== window.parent && !window.opener;
     this.detailCellRendererParams = {
       detailGridOptions: {
         columnDefs: [
@@ -160,35 +152,33 @@ export class AppComponent {
     };
   }
 
-  public get name(){
-    if(this.msalService.getUser())
-    return this.msalService.getUser().name;
+  public get name() {
+    if (this.msalService.getUser())
+      return this.msalService.getUser().name;
     else
-    return '';
+      return '';
   }
-  public get loggedIn(){
+  public get loggedIn() {
     return this.authService.isLoggedIn;
   }
-  login()
-  {
-   this.msalService.loginPopup(["user.read"]);
+  login() {
+    this.msalService.loginPopup(["user.read"]);
   }
 
-  logout()
-  {
-   this.msalService.logout();
+  logout() {
+    this.msalService.logout();
   }
   ngOnInit() {
 
     this.broadcastService.subscribe("msal:loginFailure", (payload) => {
       console.log("login failure " + JSON.stringify(payload));
-      //this.loggedIn = false;
+      this.msalService.loginRedirect();
 
     });
 
     this.broadcastService.subscribe("msal:loginSuccess", (payload) => {
       console.log("login success " + JSON.stringify(payload));
-      
+
       this.authService.login(payload._token);
     });
 

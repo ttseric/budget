@@ -1,88 +1,99 @@
+<div style="display:flex;flex-direction: row">
+    <div>
+        <span style="color: #428bca;cursor:pointer;padding-left:15px;">Back to PLS</span>
+    </div>
+    <div style="margin-left: auto;">
+        <span style="cursor:pointer;padding-right: 15px;" (click)="logout()">Logged In as {{name}}</span>
+    </div>
+</div>
+
+
 <div class="k-toolbar">
     <button kendoButton [icon]="'arrow-down'" #anchor (click)="onToggle()" class="k-button">Actions</button>
     <kendo-dropdownlist style="margin-right:5px;width:250px;" [data]="offices" [textField]="'text'"
-    [valueField]="'text'" [(ngModel)]="selectedOffice"></kendo-dropdownlist>
-<kendo-dropdownlist style="margin-right:5px;width:250px;" [data]="buildings" [textField]="'text'"
-    [valueField]="'text'" [(ngModel)]="selectedBuilding"></kendo-dropdownlist>
-<kendo-dropdownlist style="width:250px;" [data]="years" [textField]="'text'" [valueField]="'text'"
-    [(ngModel)]="selectedYear"></kendo-dropdownlist>
+        [valueField]="'text'" [(ngModel)]="selectedOffice"></kendo-dropdownlist>
+    <kendo-dropdownlist style="margin-right:5px;width:250px;" [data]="buildings" [textField]="'text'"
+        [valueField]="'text'" [(ngModel)]="selectedBuilding"></kendo-dropdownlist>
+    <kendo-dropdownlist style="width:250px;" [data]="years" [textField]="'text'" [valueField]="'text'"
+        [(ngModel)]="selectedYear"></kendo-dropdownlist>
     <button class="k-button" (click)="saveGrids()">Save Grid Settings</button>
 </div>
-  <kendo-popup style="width: 100%;" type="slide" [anchor]="anchor" [popupClass]="'content popup'" *ngIf="show">
+<kendo-popup style="width: 100%;" type="slide" [anchor]="anchor" [popupClass]="'content popup'" *ngIf="show">
     <div style="width: 100%;height: 400px;background-color: rgb(245,247,248);padding:30px;">
         <div class="row expand-menu">
             <div class="col-3 column">
                 <h6>File</h6>
                 <ul>
-                  <li>View</li>
-                  <li>New Blank</li>
-                  <li>Copy From Existing</li>
-                  <li>List Budget</li>
-                  <li>Release Budget</li>
-                  <li>Properties</li>
-                  <li>Batch Freeze</li>
+                    <li>View</li>
+                    <li>New Blank</li>
+                    <li>Copy From Existing</li>
+                    <li>List Budget</li>
+                    <li>Release Budget</li>
+                    <li>Properties</li>
+                    <li>Batch Freeze</li>
                 </ul>
             </div>
             <div class="col-3 column">
                 <h6>Report</h6>
                 <ul>
-                  <li>Budget Assumption Report</li>                    
-                  <li>Budget Summary Detail</li>                    
-                  <li>Budget Summary Detail (Multi Buildings)</li>                    
-                  <li>Budget Unit Rate Summary</li>
-                  <li>Discrepancy Report</li>
-                  <li>Occupancy Report</li>
-                  <li>Budget Vs Actual</li>
-                  <li>Expiry Schedule</li>
-                  <li>Sensitivity Report</li>
-                  <li>Sensitivity Report with Rent Review</li>
-                  <li>Expiry and Rent Review Schedule</li>
-                  <li>Budget Rent Free</li>
-                  <li>Budget Void Analysis Report</li>
-                  <li>Batch Budget Void Analysis Report</li>
+                    <li>Budget Assumption Report</li>
+                    <li>Budget Summary Detail</li>
+                    <li>Budget Summary Detail (Multi Buildings)</li>
+                    <li>Budget Unit Rate Summary</li>
+                    <li>Discrepancy Report</li>
+                    <li>Occupancy Report</li>
+                    <li>Budget Vs Actual</li>
+                    <li>Expiry Schedule</li>
+                    <li>Sensitivity Report</li>
+                    <li>Sensitivity Report with Rent Review</li>
+                    <li>Expiry and Rent Review Schedule</li>
+                    <li>Budget Rent Free</li>
+                    <li>Budget Void Analysis Report</li>
+                    <li>Batch Budget Void Analysis Report</li>
                 </ul>
             </div>
             <div class="col-3 column">
                 <h6>Configuration</h6>
                 <ul>
-                  <li>Building Setting</li>                    
-                  <ul style="padding-left: 20px">
-                      <li>Lease Term Setup</li>
-                      <li>Revenue Setup</li>
-                      <li>Expense Setup</li>
-                  </ul>
-                  <li>Hyperion</li>    
-                  <ul style="padding-left: 20px">
-                      <li>Upload Rules Setup</li>
-                  </ul>                
-                  <li>Language</li>  
-                  <ul style="padding-left: 20px">
-                      <li>English</li>
-                      <li>繁體</li>
-                      <li>簡體</li>
-                  </ul>                  
-                  <li>Cut Off Date Setup</li>     
-                  <li>Management System Parameters</li>                 
+                    <li>Building Setting</li>
+                    <ul style="padding-left: 20px">
+                        <li>Lease Term Setup</li>
+                        <li>Revenue Setup</li>
+                        <li>Expense Setup</li>
+                    </ul>
+                    <li>Hyperion</li>
+                    <ul style="padding-left: 20px">
+                        <li>Upload Rules Setup</li>
+                    </ul>
+                    <li>Language</li>
+                    <ul style="padding-left: 20px">
+                        <li>English</li>
+                        <li>繁體</li>
+                        <li>簡體</li>
+                    </ul>
+                    <li>Cut Off Date Setup</li>
+                    <li>Management System Parameters</li>
                 </ul>
             </div>
             <div class="col-3 column">
                 <h6>Help</h6>
                 <ul>
-                  <li>About</li>                    
+                    <li>About</li>
                 </ul>
             </div>
         </div>
     </div>
-    </kendo-popup>
-<div class="row" style="height: calc(100% - 170px);margin:0px;">
-    <div class="col-sm-12" style="height: 100%;padding-left: 16px;">
-        <ag-grid-angular #agGrid style="width: 99%; height: 100%;" id="myGrid" class="ag-theme-balham" [enableRangeSelection]="true"
-            [columnDefs]="budgetListingGridColumnDefs" [masterDetail]="true" [detailCellRendererParams]="budgetListDetailCellRendererParams"
-            [rowData]="rowData" (gridReady)="onGridReady($event)"></ag-grid-angular>
+</kendo-popup>
+<div style="height: calc(100% - 120px);margin:0px;padding:3px">
+    <div style="height: 100%;">
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
+            [enableRangeSelection]="true" [columnDefs]="budgetListingGridColumnDefs" [masterDetail]="true"
+            [detailCellRendererParams]="budgetListDetailCellRendererParams" [rowData]="rowData"
+            (gridReady)="onGridReady($event)"></ag-grid-angular>
     </div>
 </div>
-<kendo-window title="Copy Budget" *ngIf="opened" (close)="close()" [top]="0" [left]="centreLeft"
-    [minWidth]="250" [width]="800" [height]="730">
+<kendo-window title="Copy Budget" *ngIf="opened" (close)="close()" [top]="0" [left]="centreLeft" [minWidth]="250"
+    [width]="800" [height]="730">
 
     <form class="k-form">
         <fieldset>
@@ -147,7 +158,8 @@
         </div>
         <div class="text-right">
             <button type="button" class="k-button" (click)="close()">Cancel</button>
-            <button type="button" style="margin-left: 10px" class="k-button k-primary" (click)="submit()">Submit</button>
+            <button type="button" style="margin-left: 10px" class="k-button k-primary"
+                (click)="submit()">Submit</button>
         </div>
     </form>
 

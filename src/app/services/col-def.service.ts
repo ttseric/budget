@@ -33,12 +33,26 @@ export class ColDefService {
     {
       headerName: 'Start Date',
       field: "startDate",
-      width: 80
+      width: 80,
+      cellRenderer: (data) => {
+        if (data.value) {
+          return formatDate(data.value, 'dd-MM-yyyy', this.locale);
+        } else {
+          return ''
+        }
+      }
     },
     {
       headerName: 'End Date',
       field: "endDate",
-      width: 80
+      width: 80,
+      cellRenderer: (data) => {
+        if (data.value) {
+          return formatDate(data.value, 'dd-MM-yyyy', this.locale);
+        } else {
+          return ''
+        }
+      }
     },
     {
       headerName: 'B.F',
@@ -49,14 +63,24 @@ export class ColDefService {
       headerName: 'Amount',
       field: "amount",
       width: 80,
-      cellStyle: { 'text-align': 'right' }
+      cellStyle: { 'text-align': 'right' },
+      cellRenderer: (params) => {
+        return params.value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
     }
   ]
   public rentGridColumnDefs = [
     {
       headerName: 'R.R. Date',
       field: "rrDate",
-      width: 80
+      width: 80,
+      cellRenderer: (data) => {
+        if (data.value) {
+          return formatDate(data.value, 'dd-MM-yyyy', this.locale);
+        } else {
+          return ''
+        }
+      }
     },
     {
       headerName: 'Condition',
@@ -86,33 +110,58 @@ export class ColDefService {
   ]
   public currentTermGridColumnDefs = [
     {
-      headerName: 'EVP From',
-      field: "evpFrom",
-      width: 80
+      headerName: 'Line',
+      field: "seq",
+      width: 90,
+      resizable: false,
+      editable: false,
+      cellEditor: 'numeric',
+      cellRenderer: "agGroupCellRenderer"
     },
     {
       headerName: 'EVP To',
       field: "evpTo",
-      width: 80
+      width: 80,
+      cellRenderer: (data) => {
+        if (data.value) {
+          return formatDate(data.value, 'dd-MM-yyyy', this.locale);
+        } else {
+          return ''
+        }
+      }
     },
     {
       headerName: 'M/D',
-      field: "md1",
+      field: "evpMD",
       width: 80
     },
     {
       headerName: 'Term From',
       field: "termForm",
-      width: 80
+      width: 80,
+      cellRenderer: (data) => {
+        if (data.value) {
+          return formatDate(data.value, 'dd-MM-yyyy', this.locale);
+        } else {
+          return ''
+        }
+      }
     },
     {
       headerName: 'Term To',
       field: "termTo",
-      width: 80
+      width: 80,
+      cellRenderer: (data) => {
+        if (data.value) {
+          return formatDate(data.value, 'dd-MM-yyyy', this.locale);
+        } else {
+          return ''
+        }
+      }
     },
     {
       headerName: 'M/D',
-      field: "md2",
+      field: "termMD",
       width: 80
     },
     {
