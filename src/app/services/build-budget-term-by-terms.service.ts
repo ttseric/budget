@@ -56,6 +56,9 @@ export class BuildBudgetTermByTermsService {
       var renew  = this.isRenew(numOfTerm);
       var termAssumption: TermAssumption = new TermAssumption();
  
+      termAssumption.budgetTermId = this.budgetTerm.budgetTermId;
+      termAssumption.prevEndDate = new Date(this.startDate.getTime());
+
       if(!renew){
         this.buildEVP(this.budgetTerm.evpMD, this.startDate, termAssumption);
       }
@@ -74,11 +77,11 @@ export class BuildBudgetTermByTermsService {
         this.buildRfp(this.budgetTerm.rfpMD, startDate, termAssumption);
       }
 
-      termAssumption.seq = numOfTerm;
-      this.currentTermAssumptions.push(termAssumption);
-
+      termAssumption.seq = numOfTerm + 1;
       this.startDate = new Date(termAssumption.termTo.getTime());
       this.startDate.setDate(this.startDate.getDate() + 1);
+
+      this.currentTermAssumptions.push(termAssumption);
       numOfTerm++;
     }
   }
@@ -100,6 +103,7 @@ export class BuildBudgetTermByTermsService {
 
     to.setDate(to.getDate() - 1);
 
+    rfpAssumption.rfpAssumptionId = this.randomNumber();
     rfpAssumption.rfpFrom = from;
     rfpAssumption.rfpTo = to;
     rfpAssumption.rfpMD = rfpMD;
@@ -147,6 +151,9 @@ export class BuildBudgetTermByTermsService {
     termAssumption.evpFrom = from;
     termAssumption.evpTo = to;
     termAssumption.evpMD = evpMD;
+    termAssumption.evpToError = "error here";
   }
-
+  public randomNumber(): number {
+    return Math.floor(Math.random() * 101);
+  }
 }

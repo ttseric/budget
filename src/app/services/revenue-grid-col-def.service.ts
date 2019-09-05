@@ -1,7 +1,6 @@
 import { Injectable, Inject, LOCALE_ID } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { BudgetTerm, TermAssumption, RfpAssumption } from '../models/BudgetTerm';
-import { PopupEditorWrapper } from 'ag-grid-community';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +24,7 @@ export class RevenueGridColDefService {
   public numerOfMonth: number;
   public startDate: Date;
   constructor(
-    @Inject(LOCALE_ID) private locale: string
+    @Inject(LOCALE_ID) private locale: string,
   ) {
     this.startDate = new Date(2019, 0, 1);
     this.numerOfMonth = 72;
@@ -313,6 +312,7 @@ export class RevenueGridColDefService {
       contracturalTerm.termTo = new Date(2019, 11, 4)
       contracturalTerm.termMD = "48/00";
       contracturalTerm.isLocked = true;
+      contracturalTerm.seq = 1;
       sampleData.contractualTerms.push(contracturalTerm);
 
       for(var k=2019;k<=2024;k++){
@@ -358,39 +358,6 @@ export class RevenueGridColDefService {
         }
 
         sampleData.rentReviews.push(rent);
-      }
-
-      for(var w=0;w<10;w++){
-        var term: TermAssumption = {
-          budgetTermId: sampleData.budgetTermId,
-          termAssumptionId: 0,
-          seq: w,
-          evpFrom: this.randomDate(),
-          evpTo: this.randomDate(),
-          evpMD: "01/00",
-          termFrom: this.randomDate(),
-          termTo:this.randomDate(),
-          termMD: "24/00",
-          renew: this.randomBool(),
-          remarks: this.randomString().substring(0,30),
-          error:"",
-          isLocked: false,
-          rfpAssumptions:[]
-        }
-
-        for(var v=0;v<5;v++){
-            var rfp: RfpAssumption = {
-              rfpAssumptionId: 0,
-              rfpFrom: this.randomDate(),
-              rfpTo: this.randomDate(),
-              rfpMD: "02/00",
-              remarks: this.randomString().substring(0,10),
-              error:""
-            }
-            term.rfpAssumptions.push(rfp);
-        }
-
-        sampleData.currentTermAssumptions.push(term);
       }
       sampleData.editingTermAssumptions = [...sampleData.currentTermAssumptions];
       this.rowData.push(sampleData);
@@ -539,12 +506,7 @@ export class RevenueGridColDefService {
             lockPinned: true,
             width: 80,
             tooltipField: 'termGroup'
-          }
-        ]
-      },
-      {
-        headerName: "Renewal",
-        children: [
+          },
           {
             headerName: "EVP M/D",
             field: "evpMD",
@@ -562,7 +524,12 @@ export class RevenueGridColDefService {
             field: "rfpMD",
             pinned: null,
             lockPinned: true,
-          },
+          }
+        ]
+      },
+      {
+        headerName: "Renewal",
+        children: [
           {
             headerName: "1st Renew",
             field: "firstRenew",
@@ -670,7 +637,7 @@ export class RevenueGridColDefService {
             pinned: "left",
             lockPinned: true,
             tooltipField: 'tenant',
-            editable: true
+            editable: false
           },
           {
             headerName: "Shop",
@@ -721,12 +688,7 @@ export class RevenueGridColDefService {
             lockPinned: true,
             width: 80,
             tooltipField: 'termGroup'
-          }
-        ]
-      },
-      {
-        headerName: "Renewal",
-        children: [
+          },
           {
             headerName: "EVP M/D",
             field: "evpMD",
@@ -750,7 +712,12 @@ export class RevenueGridColDefService {
             lockPinned: true,
             editable: true,
             cellEditor: "mdTextbox"
-          },
+          }
+        ]
+      },
+      {
+        headerName: "Renewal",
+        children: [
           {
             headerName: "1st Renew",
             field: "firstRenew",

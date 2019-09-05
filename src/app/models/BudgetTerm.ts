@@ -66,6 +66,7 @@ export class TermAssumption{
     termAssumptionId: number;
     evpFrom: Date;
     evpTo: Date;
+    evpToError:string;
     evpMD: string;
     termFrom: Date;
     termTo: Date;
@@ -74,7 +75,9 @@ export class TermAssumption{
     remarks: string;
     error: string;
     isLocked: boolean;
+    isEditing: boolean;
     rfpAssumptions: RfpAssumption[]
+    prevEndDate: Date;
 
     constructor(){
         this.rfpAssumptions = [];

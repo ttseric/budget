@@ -8,7 +8,7 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToolBarModule } from '@progress/kendo-angular-toolbar';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgGridModule } from 'ag-grid-angular';
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { LayoutModule } from '@progress/kendo-angular-layout';
@@ -26,6 +26,10 @@ import { PopupModule } from '@progress/kendo-angular-popup';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { environment } from 'src/environments/environment';
+import { GridModule } from '@progress/kendo-angular-grid';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+
+
 
 export function loggerCallback(logLevel, message, piiEnabled) {
   console.log("client logging" + message);
@@ -45,6 +49,7 @@ export function loggerCallback(logLevel, message, piiEnabled) {
     ToolBarModule,
     DropDownsModule,
     FormsModule,
+    ReactiveFormsModule,
     AgGridModule.withComponents([]),
     HttpClientModule,
     LayoutModule,
@@ -69,6 +74,8 @@ export function loggerCallback(logLevel, message, piiEnabled) {
     PopupModule,
     NotificationModule,
     DateInputsModule,
+    GridModule,
+    InputsModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: MsalInterceptor, multi: true },

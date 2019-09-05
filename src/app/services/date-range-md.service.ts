@@ -11,10 +11,14 @@ export class DateRangeMDService {
     var monthDiff: number = this.monthDiff(startDate, endDate);
     var adjustToSameMonth = new Date(startDate.getTime())
 
+    if(endDate.getDate() >= startDate.getDate() - 1 ){
+      monthDiff += 1
+    }
+
     adjustToSameMonth.setMonth(startDate.getMonth() +  monthDiff);
-    var dayDiff = this.dayDiff(adjustToSameMonth, endDate);
-    var monthDiffStr = monthDiff <= 9 ? "0" + monthDiff: monthDiff.toString();
-    var dayDiffStr = dayDiff <= 9 ? "0" + dayDiff: dayDiff.toString();
+    var dayDiff = this.dayDiff(adjustToSameMonth, endDate) + 1;
+    var monthDiffStr = monthDiff <= 9  && monthDiff >= 0? "0" + monthDiff: monthDiff.toString();
+    var dayDiffStr = dayDiff <= 9 && dayDiff >= 0 ? "0" + dayDiff: dayDiff.toString();
 
     return monthDiffStr + "/" + dayDiffStr;
   }
@@ -41,14 +45,8 @@ export class DateRangeMDService {
     var days = parseInt(mdArr[1]);
     var endDate = new Date(startDate.getTime());
 
-    if(months > 0){
-      endDate.setMonth(endDate.getMonth() + months);
-    }
-
-    if(days > 0){
-      endDate.setDate(endDate.getDate() + days);
-    }
-
+    endDate.setMonth(endDate.getMonth() + months);
+    endDate.setDate(endDate.getDate() + days);
     endDate.setDate(endDate.getDate() - 1);
 
     return endDate; 
@@ -57,15 +55,13 @@ export class DateRangeMDService {
   dayDiff(d1: Date, d2: Date):number{
     var diff = d2.getTime() - d1.getTime();
     var days = diff / (1000 * 60 * 60 * 24);
-    return days + 1;
+    return days;
   }
   monthDiff(d1: Date, d2: Date):number {
     var months;
-    console.log('d1', d1.getFullYear());
-    console.log('d2', d2.getFullYear());
     months = (d2.getFullYear() - d1.getFullYear()) * 12;
     months -= d1.getMonth() + 1;
     months += d2.getMonth();
-    return months <= 0 ? 0 : months;
+    return months;
 }
 }
