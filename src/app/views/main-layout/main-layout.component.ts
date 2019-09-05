@@ -18,15 +18,14 @@ import { GridComponentsService } from 'src/app/services/grid-components.service'
 import { DateRangeMDService } from 'src/app/services/date-range-md.service';
 import { RebuildBudgetItemService } from 'src/app/services/rebuild-budget-item.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DateValidator } from 'src/app/validators/dateValidator';
-import { send } from 'q';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { IsDate, SmallerThanMaxDate, BiggerThanMinDate } from 'src/app/validators/dateValidator';
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss']
 })
+
 export class MainLayoutComponent implements OnInit {
   public gridContext = { componentParent: this};
   public showDataRow = null;
@@ -36,10 +35,6 @@ export class MainLayoutComponent implements OnInit {
   public pcRowData = [];
   public rentRowData = [];
   public currentTermReadOnlyDataRow = [];
-  public editingTermAssumptionRowData = [];
-  public editingRfpRowData =[];
-  public editingBudgetTerm: BudgetTerm;
-
   private pcGridApi: GridApi;
   private rentGridApi: GridApi;
   private pcGridColumnApi: ColumnApi;
@@ -60,7 +55,7 @@ export class MainLayoutComponent implements OnInit {
   public get rfpAssumptionReadOnlyColDefs() {
     return this.termAssumptionColDefService.rfpAssumptionReadOnlyColDefs;
   }
-  public onToggle(): void {
+  public onShowMenu(): void {
     this.showMenu = !this.showMenu;
   }
   public get defaultColDef() {
@@ -122,7 +117,7 @@ export class MainLayoutComponent implements OnInit {
     this.currentTermReadOnlyDataRow = this.showDataRow.currentTermAssumptions;
     this.editingTermAssumptionRowData = this.showDataRow.editingTermAssumptions;
   }
-  onCellFocused(event) {
+  selectRecord(event) {
     if (event.rowIndex == null)
       return;
     var row = this.revenueGridApi.getDisplayedRowAtIndex(event.rowIndex);
@@ -254,12 +249,7 @@ export class MainLayoutComponent implements OnInit {
     return this.gridDefService.save(gridDef);
   }
 
-  public close() {
-    this.showEditAssumptionDialog = false;
-    this.editingAssumption = null;
-    this.editingRowIndex = -1;
-    this.editingRfpRowIndex = -1;
-  }
+
 
   public get getRevenueMenu() {
     return this.getRevenueContextMenuItems.bind(this);
@@ -311,14 +301,8 @@ export class MainLayoutComponent implements OnInit {
     return menuItems;
   }
 
-  getBudgetTerm(budgetTermId: number): BudgetTerm {
-    return this.revenueRowData.filter(x => x.budgetTermId == budgetTermId)[0];
-  }
-
-  public rebuildBudget(termAssumption: TermAssumption){
-    var budgeTerm = this.revenueRowData.filter(x=>x.budgetTermId == termAssumption.budgetTermId)[0];
-
-    this.rebuildBudgetItemService.bugetTerm = budgeTerm;
+  public rebuildBudget(){
+    this.rebuildBudgetItemService.bugetTerm = this.editingBudgetTerm;
     this.rebuildBudgetItemService.execute();
   }
 
@@ -326,6 +310,9 @@ export class MainLayoutComponent implements OnInit {
   public editingRfpRowIndex: number;
   public editingAssumption: TermAssumption;
   public editingRowIndex:number;
+  public editingTermAssumptionRowData = [];
+  public editingRfpRowData =[];
+  public editingBudgetTerm: BudgetTerm;
   public editingAssumptionFormGroup: FormGroup;
   public editingRfpFormGroup: FormGroup;
   public showErrorDialog: boolean = false;
@@ -333,6 +320,12 @@ export class MainLayoutComponent implements OnInit {
   public showRemoveAssumptionDialog: boolean;
   public showRemoveRfpDialog: boolean;
   
+  public close() {
+    this.showEditAssumptionDialog = false;
+    this.editingAssumption = null;
+    this.editingRowIndex = -1;
+    this.editingRfpRowIndex = -1;
+  }
   public closeErrorDialog(){
     this.showErrorDialog = false;
   }
@@ -368,6 +361,7 @@ export class MainLayoutComponent implements OnInit {
   public rfpSaveHandler({sender, rowIndex, formGroup, isNew}){
     
 
+    console.log('rfp form group', this.editingRfpFormGroup);
     if(this.hasOverlapPeriod() == false){
       this.errorMessage = "RFP Period overlapped";
       this.showErrorDialog = true;
@@ -384,13 +378,15 @@ export class MainLayoutComponent implements OnInit {
     sender.closeRow(rowIndex);
   }
   public saveHandler({sender, rowIndex, formGroup, isNew}){
+
+    console.log('formgroup', this.editingAssumptionFormGroup);
     this.editingAssumption.evpTo = this.editingAssumptionFormGroup.get('evpTo').value;
     this.editingAssumption.evpMD = this.editingAssumptionFormGroup.get('evpMD').value;
     this.editingAssumption.termTo = this.editingAssumptionFormGroup.get('termTo').value;
     this.editingAssumption.termMD = this.editingAssumptionFormGroup.get('termMD').value;
     this.editingAssumption.remarks = this.editingAssumptionFormGroup.get('remarks').value;
 
-    this.rebuildBudget(this.editingAssumption);
+    this.rebuildBudget();
     this.editingRowIndex = -1;
     this.editingAssumption = null;
     sender.closeRow(rowIndex);
@@ -416,7 +412,7 @@ export class MainLayoutComponent implements OnInit {
 
     if(action == 'yes'){
       this.editingTermAssumptionRowData.splice(this.editingRowIndex, 1);
-      this.rebuildBudget(this.editingTermAssumptionRowData[0]);
+      this.rebuildBudget();
     }
       this.editingRowIndex = -1;
   }
@@ -489,13 +485,13 @@ export class MainLayoutComponent implements OnInit {
 
     this.editingTermAssumptionRowData.push(newAssumption);
     this.editingAssumption = newAssumption;
-    this.rebuildBudget(this.editingAssumption);
+    this.rebuildBudget();
 
     this.editingAssumptionFormGroup = new FormGroup({
       'budgetTermId': new FormControl(newAssumption.budgetTermId),
       'evpTo': new FormControl(newAssumption.evpTo),
       'evpMD': new FormControl(newAssumption.evpMD, []),
-      'termTo': new FormControl(newAssumption.termTo,[Validators.required, DateValidator()]),
+      'termTo': new FormControl(newAssumption.termTo,[Validators.required]),
       'termMD': new FormControl(newAssumption.termMD, [Validators.required, Validators.pattern("([0-9]{2})(\/)([0-9]{2})")]),
       'remarks': new FormControl(newAssumption.remarks)
     })
@@ -524,7 +520,7 @@ export class MainLayoutComponent implements OnInit {
       'budgetTermId': new FormControl(dataItem.budgetTermId),
       'evpTo': new FormControl(dataItem.evpTo),
       'evpMD': new FormControl(dataItem.evpMD, [Validators.pattern("([0-9]{2})(\/)([0-9]{2})")]),
-      'termTo': new FormControl(dataItem.termTo,[Validators.required, DateValidator()]),
+      'termTo': new FormControl(dataItem.termTo,[Validators.required]),
       'termMD': new FormControl(dataItem.termMD, [Validators.required, Validators.pattern("([0-9]{2})(\/)([0-9]{2})")]),
       'remarks': new FormControl(dataItem.remarks)
     })
@@ -591,9 +587,7 @@ export class MainLayoutComponent implements OnInit {
     this.editingAssumptionFormGroup.patchValue({'evpMD': evpMD});
   }
   public onEvpMDChange(event){
-    console.log('evp md change event', event);
     var evpMD = this.editingAssumptionFormGroup.get('evpMD').value;
-    console.log('evp md value', evpMD);
 
     if(evpMD == ''){
       var termFrom = new Date(this.editingAssumption.prevEndDate.getTime());
@@ -615,5 +609,23 @@ export class MainLayoutComponent implements OnInit {
       this.editingAssumptionFormGroup.patchValue({'termTo': termTo});
       this.editingAssumptionFormGroup.patchValue({'evpTo': evpTo});
     }
+  }
+  public sumRfpMD(termAssumption: TermAssumption):string{
+    var rfps = termAssumption.rfpAssumptions;
+    var months = 0;
+    var days = 0;
+    for(var i=0;i<rfps.length;i++){
+      var rfp = rfps[i];
+      var rfpMD = rfp.rfpMD;
+      var mdArr = rfpMD.split('/');
+
+      months += parseInt(mdArr[0]);
+      days += parseInt(mdArr[1]);
+    }
+
+    var monthStr = months<10? "0" + months: months;
+    var dayStr = days<10?"0" + days: days;
+
+    return monthStr + "/" + dayStr;
   }
 }

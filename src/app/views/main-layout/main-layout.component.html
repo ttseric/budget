@@ -1,6 +1,6 @@
 <div class="k-toolbar">
   <button kendoButton [icon]="'arrow-left'" #anchor (click)="goHomePage()" class="k-button">Back</button>
-  <button kendoButton [icon]="'arrow-down'" #anchor (click)="onToggle()" class="k-button">Actions</button>
+  <button kendoButton [icon]="'arrow-down'" #anchor (click)="onShowMenu()" class="k-button">Actions</button>
   <button class="k-button" (click)="saveGrids()">Save Grid Settings</button>
 </div>
 <kendo-popup style="width: 100%;" type="slide" [anchor]="anchor" [popupClass]="'content popup'" *ngIf="showMenu">
@@ -135,7 +135,7 @@
             style="width: 100%; height: calc(100% - 90px);" id="revenueGrid" class="ag-theme-balham"
             [columnDefs]="revenueColDefs" (gridReady)="onRevenueGridReady($event)" [components]="components"
             [rowSelection]="'multiple'" [rowData]="revenueRowData" [floatingFilter]="true" [singleClickEdit]="true"
-            [suppressRowClickSelection]="'true'" (cellFocused)="onCellFocused($event)" [editType]="'fullRow'"
+            [suppressRowClickSelection]="'true'" (cellFocused)="selectRecord($event)" [editType]="'fullRow'"
             [gridOptions]="revenueGridOptions" [getContextMenuItems]="getRevenueMenu">
           </ag-grid-angular>
           <ag-grid-angular #termFooterGrid [defaultColDef]="revenueDefaultColDefs" headerHeight="0"
@@ -288,10 +288,11 @@
   [width]="width" [height]="730">
   <div style="padding:5px;height:100%;">
     <kendo-grid [data]="editingTermAssumptionRowData" style="height: 100%" [navigable]="true"
-      (detailExpand)="expandHandler($event)" (detailCollapse)="collapseHandler($event)" (add)="addHandler($event)" (edit)="editHandler($event)"
-      (save)="saveHandler($event)" (cancel)="cancelHandler($event)" (remove)="removeHandler($event)">
+      (detailExpand)="expandHandler($event)" (detailCollapse)="collapseHandler($event)" (add)="addHandler($event)"
+      (edit)="editHandler($event)" (save)="saveHandler($event)" (cancel)="cancelHandler($event)"
+      (remove)="removeHandler($event)">
       <ng-template kendoGridToolbarTemplate>
-        <button kendoGridAddCommand [disabled]="editingRfpRowIndex >= 0 || editingRowIndex >= 0" >Add new</button>
+        <button kendoGridAddCommand [disabled]="editingRfpRowIndex >= 0 || editingRowIndex >= 0">Add new</button>
       </ng-template>
       <kendo-grid-column field="seq" title="Seq" width="50"></kendo-grid-column>
       <kendo-grid-column-group title="EVP">
@@ -309,15 +310,16 @@
         </kendo-grid-column>
         <kendo-grid-column field="evpMD" title="MM/DD" width="100">
           <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingAssumptionFormGroup">
-            <kendo-maskedtextbox #evpMD mask="99/99" includeLiterals="true"
+            <input #evpMD style="width:0px;border:0px;" [formControl]="editingAssumptionFormGroup.get(column.field)" />
+            <kendo-maskedtextbox mask="99/99" includeLiterals="true"
               [formControl]="editingAssumptionFormGroup.get(column.field)" (change)="onEvpMDChange($event)">
             </kendo-maskedtextbox>
-            <kendo-popup [anchor]="evpMD"
+            <!-- <kendo-popup [anchor]="evpMD"
               *ngIf="editingAssumptionFormGroup.get(column.field).invalid && !(editingAssumptionFormGroup.get(column.field).untouched)"
               popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg">
               <span class="k-icon k-i-warning"></span>
-              <span>format e.g. 01/00</span>
-            </kendo-popup>
+              <span>MM/DD e.g. 01/00</span>
+            </kendo-popup> -->
           </ng-template>
         </kendo-grid-column>
       </kendo-grid-column-group>
@@ -333,98 +335,113 @@
             <span>{{dataItem.termTo | date : 'dd-MM-yyyy'}}</span>
           </ng-template>
           <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingAssumptionFormGroup">
-            <kendo-datepicker #termTo [min]="editingAssumption.termFrom" format="dd-MM-yyyy"
+              <input #termTo style="width:0px;border:0px;" [formControl]="editingAssumptionFormGroup.get(column.field)" />
+            <kendo-datepicker [min]="editingAssumption.termFrom" format="dd-MM-yyyy"
               (valueChange)="onTermToChange($event)" [formControl]="editingAssumptionFormGroup.get(column.field)">
             </kendo-datepicker>
+              <kendo-popup [anchor]="termTo"
+              *ngIf="editingAssumptionFormGroup.get(column.field).invalid && !(editingAssumptionFormGroup.get(column.field).untouched)"
+              popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg">
+              <span class="k-icon k-i-warning"></span>
+              <span *ngIf="editingAssumptionFormGroup.get('termTo').errors.minError">
+                The date must bigger than {{editingAssumptionFormGroup.get('termTo').errors.minError.value | date: 'dd-MM-yyyy'}}
+              </span>
+              <span *ngIf="editingAssumptionFormGroup.get('termTo').errors.required">
+                 Required
+                </span>
+            </kendo-popup>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="termMD" title="MM/DD" width="100">
           <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingAssumptionFormGroup">
-            <kendo-maskedtextbox #termMD mask="99/99" includeLiterals="true"
+            <input #termMD style="width:0px;border:0px;" [formControl]="editingAssumptionFormGroup.get(column.field)" />
+            <kendo-maskedtextbox mask="99/99" includeLiterals="true"
               [formControl]="editingAssumptionFormGroup.get(column.field)" (change)="onTermMDChange($event)">
             </kendo-maskedtextbox>
-            <kendo-popup [anchor]="termMD"
+            <!-- <kendo-popup [anchor]="termMD"
               *ngIf="editingAssumptionFormGroup.get(column.field).invalid && !(editingAssumptionFormGroup.get(column.field).untouched)"
               popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg">
               <span class="k-icon k-i-warning"></span>
-              <span>invalid MD e.g. 01/00</span>
-            </kendo-popup>
+              <span>MM/DD e.g. 01/00</span>
+            </kendo-popup> -->
           </ng-template>
         </kendo-grid-column>
       </kendo-grid-column-group>
-
+      <kendo-grid-column field="remarks" title="RFP">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>{{sumRfpMD(dataItem)}}</span>
+          </ng-template>
+        </kendo-grid-column>
       <kendo-grid-column field="remarks" editor="text" title="Remarks"></kendo-grid-column>
       <kendo-grid-command-column title="" width="200">
         <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem>
-          <button kendoGridEditCommand [disabled]="editingRowIndex >= 0 || dataItem.isLocked || editingRfpRowIndex >= 0" [primary]="true">Edit</button>
-          <button kendoGridSaveCommand [disabled]="editingAssumptionFormGroup?.invalid">Update</button>
+          <button kendoGridEditCommand [disabled]="editingRowIndex >= 0 || dataItem.isLocked || editingRfpRowIndex >= 0"
+            [primary]="true">Edit</button>
+          <!-- <button kendoGridSaveCommand [disabled]="editingAssumptionFormGroup?.invalid">Update</button> -->
+          <button kendoGridSaveCommand >Update</button>
           <button kendoGridCancelCommand>Cancel</button>
-          <button kendoGridRemoveCommand [disabled]="editingRowIndex >= 0 || dataItem.isLocked || editingRfpRowIndex >= 0">Remove</button>
+          <button kendoGridRemoveCommand
+            [disabled]="editingRowIndex >= 0 || dataItem.isLocked || editingRfpRowIndex >= 0">Remove</button>
         </ng-template>
       </kendo-grid-command-column>
-      <div *kendoGridDetailTemplate="let di">
-        <kendo-grid  [data]="di.rfpAssumptions" [navigable]="true" kendoGridFocusable (add)="rfpAddHandler($event)"
+      <div *kendoGridDetailTemplate="let di" style="padding-bottom:30px;">
+        <kendo-grid style="height:250px;" [data]="di.rfpAssumptions" [navigable]="true" kendoGridFocusable (add)="rfpAddHandler($event)"
           (edit)="rfpEditHandler($event)" (save)="rfpSaveHandler($event)" (cancel)="rfpCancelHandler($event)"
           (remove)="rfpRemoveHandler($event)">
           <ng-template kendoGridToolbarTemplate>
-            <button kendoGridAddCommand [disabled]="editingRfpRowIndex >= 0 || editingRowIndex >= 0" >Add new</button>
+            <button kendoGridAddCommand [disabled]="editingRfpRowIndex >= 0 || editingRowIndex >= 0">Add new</button>
           </ng-template>
           <kendo-grid-column-group title="RFP">
-              <kendo-grid-column field="rfpFrom" title="From" width="150">
-                  <ng-template kendoGridCellTemplate let-dataItem>
-                    <span>{{dataItem.rfpFrom | date : 'dd-MM-yyyy'}}</span>
-                  </ng-template>
-                  <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingRfpFormGroup"
-                    let-dataItem="dataItem">
-                    <kendo-datepicker #rfpFrom 
-                    format="dd-MM-yyyy" 
-                    [min]="di.termFrom" 
-                    [max]="editingRfpFormGroup.get('rfpTo').value" 
-                    (valueChange)="onRfpFromChange($event)" 
-                    [formControl]="editingRfpFormGroup.get(column.field)">
-                    </kendo-datepicker>
-                  </ng-template>
-                </kendo-grid-column>
-      
-                <kendo-grid-column field="rfpTo" title="To" width="150">
-                  <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingRfpFormGroup"
-                    let-dataItem="dataItem">
-                    <kendo-datepicker #rfpTo 
-                    [min]="editingRfpFormGroup.get('rfpFrom').value" 
-                    [max]="di.termTo" 
-                    format="dd-MM-yyyy" 
-                    (valueChange)="onRfpToChange($event)" 
-                    [formControl]="editingRfpFormGroup.get(column.field)">
-                    </kendo-datepicker>
-                  </ng-template>
-                  <ng-template kendoGridCellTemplate let-dataItem>
-                    <span>{{dataItem.rfpTo | date : 'dd-MM-yyyy'}}</span>
-                  </ng-template>
-                </kendo-grid-column>
-                <kendo-grid-column field="rfpMD" title="MM/DD" width="100">
-                  <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingRfpFormGroup">
-                    <kendo-maskedtextbox #rfpMD 
-                    mask="99/99" 
-                    includeLiterals="true"
-                    [formControl]="editingRfpFormGroup.get(column.field)"
-                    (change)="onRfpMDChange($event)"
-                    ></kendo-maskedtextbox>
-                    <kendo-popup [anchor]="rfpMD"
-                      *ngIf="editingRfpFormGroup.get(column.field)?.invalid && !(editingRfpFormGroup.get(column.field).untouched)"
-                      popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg">
-                      <span class="k-icon k-i-warning"></span>
-                      <span>format e.g. 01/00</span>
-                    </kendo-popup>
-                  </ng-template>
-                </kendo-grid-column>
-          </kendo-grid-column-group>
+            <kendo-grid-column field="rfpFrom" title="From" width="150">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <span>{{dataItem.rfpFrom | date : 'dd-MM-yyyy'}}</span>
+              </ng-template>
+              <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingRfpFormGroup"
+                let-dataItem="dataItem">
+                <kendo-datepicker #rfpFrom format="dd-MM-yyyy" [min]="di.termFrom"
+                  [max]="editingRfpFormGroup.get('rfpTo').value" (valueChange)="onRfpFromChange($event)"
+                  [formControl]="editingRfpFormGroup.get(column.field)">
+                </kendo-datepicker>
+              </ng-template>
+            </kendo-grid-column>
 
+            <kendo-grid-column field="rfpTo" title="To" width="150">
+              <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingRfpFormGroup"
+                let-dataItem="dataItem">
+                <kendo-datepicker #rfpTo [min]="editingRfpFormGroup.get('rfpFrom').value" [max]="di.termTo"
+                  format="dd-MM-yyyy" (valueChange)="onRfpToChange($event)"
+                  [formControl]="editingRfpFormGroup.get(column.field)">
+                </kendo-datepicker>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <span>{{dataItem.rfpTo | date : 'dd-MM-yyyy'}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="rfpMD" title="MM/DD" width="100">
+              <ng-template kendoGridEditTemplate let-column="column" let-formGroup="editingRfpFormGroup">
+                <input #rfpMD style="width:0px;border:0px;" [formControl]="editingRfpFormGroup.get(column.field)" />
+
+                <kendo-maskedtextbox mask="99/99" includeLiterals="true"
+                  [formControl]="editingRfpFormGroup.get(column.field)" (change)="onRfpMDChange($event)">
+                </kendo-maskedtextbox>
+                <!-- <kendo-popup [anchor]="rfpMD"
+                  *ngIf="editingRfpFormGroup.get(column.field)?.invalid && !(editingRfpFormGroup.get(column.field).untouched)"
+                  popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg">
+                  <span class="k-icon k-i-warning"></span>
+                  <span>MM/DD e.g. 01/00</span>
+                </kendo-popup> -->
+              </ng-template>
+            </kendo-grid-column>
+          </kendo-grid-column-group>
           <kendo-grid-column field="remarks" editor="text" title="Remarks"></kendo-grid-column>
-          <kendo-grid-command-column title="command" width="200">
+          <kendo-grid-command-column width="200">
             <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem>
-              <button kendoGridEditCommand [disabled]="editingRfpRowIndex >= 0 || dataItem.isLocked || editingRowIndex >= 0" [primary]="true">Edit</button>
+              <button kendoGridEditCommand
+                [disabled]="editingRfpRowIndex >= 0 || dataItem.isLocked || editingRowIndex >= 0"
+                [primary]="true">Edit</button>
               <button kendoGridSaveCommand [disabled]="editingRfpFormGroup?.invalid">Update</button>
-              <button kendoGridRemoveCommand [disabled]="editingRfpRowIndex >= 0 || dataItem.isLocked || editingRowIndex >= 0">Remove</button>
+              <button kendoGridRemoveCommand
+                [disabled]="editingRfpRowIndex >= 0 || dataItem.isLocked || editingRowIndex >= 0">Remove</button>
               <button kendoGridCancelCommand> Cancel</button>
             </ng-template>
           </kendo-grid-command-column>
@@ -439,30 +456,31 @@
 
 </kendo-dialog>
 
-<kendo-dialog  *ngIf="showErrorDialog">
-    <kendo-dialog-titlebar>
-      <div style="font-size: 18px; line-height: 1.3em;">
-        <span class="k-icon k-i-warning"></span> Save Data
-      </div>
-    </kendo-dialog-titlebar>
-    <p style="margin: 30px; text-align: center;">{{errorMessage}}.</p>
+<kendo-dialog *ngIf="showErrorDialog">
+  <kendo-dialog-titlebar>
+    <div style="font-size: 18px; line-height: 1.3em;">
+      <span class="k-icon k-i-warning"></span> Save Data
+    </div>
+  </kendo-dialog-titlebar>
+  <p style="margin: 30px; text-align: center;">{{errorMessage}}.</p>
 
-    <kendo-dialog-actions [layout]="'normal'">
-      <button kendoButton (click)="closeErrorDialog()">OK</button>
-    </kendo-dialog-actions>
-  </kendo-dialog>
+  <kendo-dialog-actions [layout]="'normal'">
+    <button kendoButton (click)="closeErrorDialog()">OK</button>
+  </kendo-dialog-actions>
+</kendo-dialog>
 
-  <kendo-dialog title="Please confirm" *ngIf="showRemoveAssumptionDialog" (close)="removeTermAssumption('cancel')" [width]="300">
-      <p style="margin: 30px; text-align: center;">Are you sure you want to delete?</p>
-      <kendo-dialog-actions [layout]="'normal'">
-          <button kendoButton (click)="removeTermAssumption('no')">No</button>
-          <button kendoButton (click)="removeTermAssumption('yes')" primary="true">Yes</button>
-      </kendo-dialog-actions>
-  </kendo-dialog>
-  <kendo-dialog title="Please confirm" *ngIf="showRemoveRfpDialog" (close)="removeRfp('cancel')" [width]="300">
-      <p style="margin: 30px; text-align: center;">Are you sure you want to delete?</p>
-      <kendo-dialog-actions [layout]="'normal'">
-          <button kendoButton (click)="removeRfp('no')">No</button>
-          <button kendoButton (click)="removeRfp('yes')" primary="true">Yes</button>
-      </kendo-dialog-actions>
-  </kendo-dialog>
+<kendo-dialog title="Please confirm" *ngIf="showRemoveAssumptionDialog" (close)="removeTermAssumption('cancel')"
+  [width]="300">
+  <p style="margin: 30px; text-align: center;">Are you sure you want to delete?</p>
+  <kendo-dialog-actions [layout]="'normal'">
+    <button kendoButton (click)="removeTermAssumption('no')">No</button>
+    <button kendoButton (click)="removeTermAssumption('yes')" primary="true">Yes</button>
+  </kendo-dialog-actions>
+</kendo-dialog>
+<kendo-dialog title="Please confirm" *ngIf="showRemoveRfpDialog" (close)="removeRfp('cancel')" [width]="300">
+  <p style="margin: 30px; text-align: center;">Are you sure you want to delete?</p>
+  <kendo-dialog-actions [layout]="'normal'">
+    <button kendoButton (click)="removeRfp('no')">No</button>
+    <button kendoButton (click)="removeRfp('yes')" primary="true">Yes</button>
+  </kendo-dialog-actions>
+</kendo-dialog>
