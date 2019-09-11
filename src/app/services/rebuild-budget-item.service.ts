@@ -1,31 +1,35 @@
 import { Injectable } from '@angular/core';
 import { TermAssumption, BudgetTerm } from '../models/BudgetTerm';
 import { DateRangeMDService } from './date-range-md.service';
+import { AlignRfpPeriodWithTermChangeService } from './align-rfp-period-with-term-change.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RebuildBudgetItemService {
+export class RebuildBudgetTermService {
 
   public bugetTerm: BudgetTerm;
 
   constructor(
-    private dateRangeMDService: DateRangeMDService
+    private dateRangeMDService: DateRangeMDService,
+    private alignRfpPeriodService: AlignRfpPeriodWithTermChangeService
   ) { }
 
   public execute(){
     var assumptions = this.bugetTerm.editingTermAssumptions;
+    console.log('assumptions', assumptions);
     var contractualTerms = this.bugetTerm.contractualTerms;
     var today = new Date();
     var yesterday = new Date(today.getDate() -1 );
     var startDate = contractualTerms.length > 0 ? contractualTerms[0].termTo : assumptions.length > 0 ? assumptions[0].termTo : yesterday;
-
     startDate = new Date(startDate.getTime());
     startDate.setDate(startDate.getDate() + 1);
 
     var i = contractualTerms.length > 0 ? 1: 0; //no need to calc first row because it is contractual
     for(i;i<assumptions.length;i++){
       var ass = assumptions[i];
+      var oldTermFrom = ass.termFrom == null? null: new Date(ass.termFrom.getTime());
+      
       ass.prevEndDate = new Date(startDate.getTime());
       ass.seq = i + 1;
       
@@ -58,12 +62,19 @@ export class RebuildBudgetItemService {
         ass.termTo = null;
       }
 
+
+      //adjust rfp period if term period has changed
+
+      var newTermFrom = ass.termFrom == null? null: new Date(ass.termFrom.getTime());
+      if(oldTermFrom != null && newTermFrom !=null)
+      {
+        this.alignRfpPeriodService.oldDate = oldTermFrom;
+        this.alignRfpPeriodService.newDate = newTermFrom;
+        this.alignRfpPeriodService.rfpAssumptions = ass.rfpAssumptions;
+        this.alignRfpPeriodService.execute();
+      }
+
     }
-
-    
-    
-
-
   }
 
 }

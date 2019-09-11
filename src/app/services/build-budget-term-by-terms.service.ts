@@ -89,7 +89,7 @@ export class BuildBudgetTermByTermsService {
     var from: Date = new Date(startDate.getTime());
     var to: Date = new Date(from.getTime());
 
-    var mdArr = termAssumption.evpMD.split("/");
+    var mdArr = rfpMD.split("/");
     var months = parseInt(mdArr[0])
     var days = parseInt(mdArr[1]);
     var rfpAssumption: RfpAssumption = new RfpAssumption;

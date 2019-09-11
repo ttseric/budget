@@ -7,9 +7,28 @@ export class DateRangeMDService {
 
   constructor() { }
 
+  public calcMDwithNegetiveResult(startDate: Date, endDate: Date):string{
+    var monthDiff: number = this.monthDiff(startDate, endDate);
+    var adjustToSameMonth = new Date(startDate.getTime())
+
+    if(endDate.getDate() >= startDate.getDate() - 1 ){
+      monthDiff += 1
+    }
+
+    adjustToSameMonth.setMonth(startDate.getMonth() +  monthDiff);
+    var dayDiff = this.dayDiff(adjustToSameMonth, endDate) + 1;
+    var monthDiffStr = monthDiff <= 9  && monthDiff >= 0? "0" + monthDiff: monthDiff.toString();
+    var dayDiffStr = dayDiff <= 9 && dayDiff >= 0 ? "0" + dayDiff: dayDiff.toString();
+
+    return monthDiffStr + "/" + dayDiffStr;
+  }
+
   public calcMD(startDate: Date, endDate: Date):string{
     var monthDiff: number = this.monthDiff(startDate, endDate);
     var adjustToSameMonth = new Date(startDate.getTime())
+
+    if(startDate.getTime() > endDate.getTime())
+      return "";
 
     if(endDate.getDate() >= startDate.getDate() - 1 ){
       monthDiff += 1

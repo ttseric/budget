@@ -75,3 +75,10 @@ html{
 .k-grid th{
     text-align: center;
 }
+.k-grid .k-tooltip.k-tooltip-validation{
+    background-color: #ff6358!important;
+}
+
+.k-grid-edit-row{
+    height: calc(100% + 70px)!important;
+}

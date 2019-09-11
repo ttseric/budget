@@ -438,10 +438,7 @@ function getDatePicker() {
   Datepicker.prototype.getGui = function () {
     return this.eInput;
   };
-  // Datepicker.prototype.afterGuiAttached = function () {
-  //   this.eInput.focus();
-  //   this.eInput.select();
-  // };
+
   Datepicker.prototype.getValue = function () {
     var dateString = this.eInput.value;
     var dateStrArr = dateString.split("-");
@@ -475,15 +472,7 @@ function getMDTextbox() {
   MDTextbox.prototype.getGui = function () {
     return this.eInput;
   };
-  // MDTextbox.prototype.afterGuiAttached = function () {
-  //   window.setTimeout(()=>{
-  //     this.eInput.focus();
-  //   }, 50);
-  //   window.setTimeout(()=>{
-  //     this.eInput.select();
-  //   }, 100);
 
-  // };
   MDTextbox.prototype.getValue = function () {
     return this.eInput.value;
   };

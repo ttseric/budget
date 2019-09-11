@@ -1,8 +1,9 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
-import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+import { AbstractControl, ValidatorFn, FormGroup } from '@angular/forms';
+import { RfpAssumption } from '../models/BudgetTerm';
 
 export function IsDate(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
+        console.log('isdate', control.value);
         var isDate = control.value != null && !Number.isNaN(control.value.getTime());
         console.log('isvalidateDate', isDate);
         if (isDate)
@@ -12,30 +13,65 @@ export function IsDate(): ValidatorFn {
         }
     };
 }
-
-export function SmallerThanMaxDate(maxDate: Date): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-
-        console.log('max date', maxDate);
-        console.log('max date control', control);
-        var isSmallerThanMaxDate = control.value.getTime() < maxDate.getTime();
-
-        if (isSmallerThanMaxDate)
+export function StartDateBiggerThanEndDate():ValidatorFn {
+    return (editingRfpFormGroup: FormGroup ): { [key: string]: any} | null =>{
+        if(editingRfpFormGroup == undefined)
             return null;
-        else {
-            return { 'SmallerThanMaxDate': { value: isSmallerThanMaxDate } };
-        }
-    };
+            var hasRfpFrom = editingRfpFormGroup.get('rfpFrom').value != null;
+            var hasRfpTo = editingRfpFormGroup.get('rfpTo').value != null;
+    
+            if(!hasRfpFrom || !hasRfpTo)
+                return null;
+            
+            var rfpFrom = editingRfpFormGroup.get('rfpFrom').value.getTime();
+            var rfpTo = editingRfpFormGroup.get('rfpTo').value.getTime();
+
+            if(rfpFrom > rfpTo){
+                return {'StartDateBiggerThanEndDate': {value: true}};
+            }
+
+    }
 }
+export function CheckOverlap(editingRfpRowData: RfpAssumption[]):ValidatorFn {
+    return (editingRfpFormGroup: FormGroup ): { [key: string]: any} | null =>{
 
-export function BiggerThanMinDate(minDate: Date): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-        var isBiggerThanMinDate = control.value.getTime() > minDate.getTime();
-        console.log('isbiggerthanmindate: ', isBiggerThanMinDate)
-        if (isBiggerThanMinDate) {
+        if(editingRfpFormGroup == undefined)
             return null;
-        } else {
-            return { 'BiggerThanMinDate': { value: isBiggerThanMinDate } };
+
+        var hasRfpFrom = editingRfpFormGroup.get('rfpFrom').value != null;
+        var hasRfpTo = editingRfpFormGroup.get('rfpTo').value != null;
+
+        if(!hasRfpFrom || !hasRfpTo)
+            return null;
+
+        var rfpId = editingRfpFormGroup.get('rfpAssumptionId').value;
+        var hasOverlap = false;
+        var rfps = editingRfpRowData.filter(x=>x.rfpAssumptionId != rfpId);
+        var rfpFrom = editingRfpFormGroup.get('rfpFrom').value.getTime();
+        var rfpTo = editingRfpFormGroup.get('rfpTo').value.getTime();
+
+        for(var i=0;i<rfps.length;i++){
+            var rfp = rfps[i];
+
+            var from = rfp.rfpFrom.getTime();
+            var to = rfp.rfpTo.getTime();
+            
+            if(rfpFrom <= from && rfpTo >= to)
+                hasOverlap = true;
+            else if(rfpFrom >= from && rfpTo <= to)
+                hasOverlap =  true;
+            else if(rfpFrom <= from && rfpTo >= from)
+                hasOverlap = true;
+            else if(rfpFrom <= to && rfpTo >= to)
+                hasOverlap = true;
+            else
+                hasOverlap = false;
+
+            if(hasOverlap){
+                return {'HasOverLap': { value: true}}
+            }
         }
+
+
     }
 }

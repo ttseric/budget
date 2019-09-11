@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RebuildBudgetItemService } from './rebuild-budget-item.service';
+import { RebuildBudgetTermService } from './rebuild-budget-item.service';
 
-describe('RebuildBudgetItemService', () => {
+describe('RebuildBudgetTermService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RebuildBudgetItemService = TestBed.get(RebuildBudgetItemService);
+    const service: RebuildBudgetTermService = TestBed.get(RebuildBudgetTermService);
     expect(service).toBeTruthy();
   });
 });

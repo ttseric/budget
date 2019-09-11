@@ -403,12 +403,13 @@ export class RevenueGridColDefService {
           {
             headerName: "Seq",
             field: "seq",
+            rowDrag:true,
             checkboxSelection: false,
             headerCheckboxSelection: false,
             headerCheckboxSelectionFilteredOnly: false,
             pinned: "left",
             lockPinned: true,
-            tooltipField: 'seq'
+            tooltipField: 'seq',
           },
           {
             headerName: "Warning",
@@ -478,6 +479,7 @@ export class RevenueGridColDefService {
             pinned: "left",
             lockPinned: true,
             tooltipField: 'expiryDate',
+            width: 180,
             cellRenderer: (data) => {
               if (data.value) {
                 return formatDate(data.value, 'dd-MM-yyyy', this.locale);
@@ -584,6 +586,7 @@ export class RevenueGridColDefService {
           {
             headerName: "Seq",
             field: "seq",
+            rowDrag:true,
             checkboxSelection: true,
             headerCheckboxSelection: true,
             headerCheckboxSelectionFilteredOnly: true,
@@ -647,17 +650,28 @@ export class RevenueGridColDefService {
             tooltipField: 'shop'
           },
           {
-            headerName: "Trade",
-            field: "trade",
-            pinned: "left",
-            lockPinned: true,
-            columnGroupShow: "open",
-            tooltipField: 'trade'
-          },
-          {
             headerName: "Expiry",
             field: "expiryDate",
             pinned: "left",
+            filter: "agDateColumnFilter",
+            width: 180,
+            filterParams: {
+              comparator: function(filterLocalDateAtMidnight, cellValue) {
+                  var cellDate = new Date(cellValue.getFullYear(), cellValue.getMonth(), cellValue.getDate());
+                  console.log('filterLocalDate', filterLocalDateAtMidnight);
+                  console.log('cellValue', cellValue);
+                if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
+                  return 0;
+                }
+                if (cellDate.getTime() < filterLocalDateAtMidnight.getTime()) {
+                  return -1;
+                }
+                if (cellDate.getTime() > filterLocalDateAtMidnight.getTime()) {
+                  return 1;
+                }
+              },
+              browserDatePicker: true
+            },
             lockPinned: true,
             tooltipField: 'expiryDate',
             cellRenderer: (data) => {
@@ -667,7 +681,15 @@ export class RevenueGridColDefService {
                 return ''
               }
             }
-          }
+          },
+          {
+            headerName: "Trade",
+            field: "trade",
+            pinned: "left",
+            lockPinned: true,
+            columnGroupShow: "open",
+            tooltipField: 'trade'
+          },
         ]
       },
       {
