@@ -28,6 +28,7 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { environment } from 'src/environments/environment';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+// import { EditTermAssumptionComponent } from './views/edit-term-assumption/edit-term-assumption.component';
 
 
 
@@ -40,6 +41,7 @@ export function loggerCallback(logLevel, message, piiEnabled) {
     AppComponent,
     MainLayoutComponent,
     HomeComponent,
+   // EditTermAssumptionComponent,
   ],
   imports: [
     BrowserModule,
