@@ -57,7 +57,7 @@
     "inputmask": "^4.0.8",
     "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "rxjs": "~6.5.2",
     "rxjs-compat": "^6.5.2",
     "service": "^0.1.4",
